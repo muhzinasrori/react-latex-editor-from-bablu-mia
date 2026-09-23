@@ -171,7 +171,7 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
           { symbol: "\\gg", title: "Much Greater", display: "≫" },
         ],
         fractions: [
-          { symbol: "\\frac{}{}", title: "Fraction", display: "a/b" },
+          { symbol: "\\frac{a}{b}", title: "Fraction", display: "a/b" },
           { symbol: "\\frac{1}{2}", title: "One Half", display: "½" },
           { symbol: "\\frac{1}{3}", title: "One Third", display: "⅓" },
           { symbol: "\\frac{1}{4}", title: "One Quarter", display: "¼" },
@@ -453,205 +453,6 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
             )}
           </div>
 
-          <div className="math-toolbar-container">
-            {renderToolbar(toolbarSections[activeTab])}
-          </div>
-
-          <div className="math-examples">
-            <h4>General Math</h4>
-            <div className="equation-buttons">
-              <button
-                onClick={() =>
-                  insertSymbol("x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}")
-                }
-                type="button"
-              >
-                Quadratic Formula
-              </button>
-              <button
-                onClick={() => insertSymbol("a^2 + b^2 = c^2")}
-                type="button"
-              >
-                Pythagorean Theorem
-              </button>
-              <button
-                onClick={() => insertSymbol("A = \\pi r^2")}
-                type="button"
-              >
-                Area of Circle
-              </button>
-              <button
-                onClick={() => insertSymbol("C = 2 \\pi r")}
-                type="button"
-              >
-                Circumference
-              </button>
-            </div>
-          </div>
-
-          <div className="math-examples">
-            <h4>Higher Math</h4>
-            <div className="equation-buttons">
-              <button
-                onClick={() => insertSymbol("\\frac{dy}{dx}")}
-                type="button"
-              >
-                Derivative
-              </button>
-              <button
-                onClick={() => insertSymbol("e^{i\\pi} + 1 = 0")}
-                type="button"
-              >
-                Euler's Identity
-              </button>
-              <button
-                onClick={() =>
-                  insertSymbol(
-                    "f'(x) = \\lim_{h \\to 0} \\frac{f(x+h) - f(x)}{h}",
-                  )
-                }
-                type="button"
-              >
-                Limit Definition of Derivative
-              </button>
-              <button
-                onClick={() =>
-                  insertSymbol(
-                    "\\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}",
-                  )
-                }
-                type="button"
-              >
-                Gaussian Integral
-              </button>
-            </div>
-          </div>
-
-          <div className="math-examples">
-            <h4>Physics</h4>
-            <div className="equation-buttons">
-              <button onClick={() => insertSymbol("F = ma")} type="button">
-                Newton's 2nd Law
-              </button>
-              <button onClick={() => insertSymbol("E = mc^2")} type="button">
-                E=mc²
-              </button>
-              <button
-                onClick={() => insertSymbol("KE = \\frac{1}{2} mv^2")}
-                type="button"
-              >
-                Kinetic Energy
-              </button>
-              <button onClick={() => insertSymbol("V = IR")} type="button">
-                Ohm's Law
-              </button>
-              <button
-                onClick={() =>
-                  insertSymbol("\\Delta x \\Delta p \\geq \\frac{\\hbar}{2}")
-                }
-                type="button"
-              >
-                Uncertainty Principle
-              </button>
-              <button
-                onClick={() =>
-                  insertSymbol(
-                    "\\nabla \\cdot \\vec{E} = \\frac{\\rho}{\\epsilon_0}",
-                  )
-                }
-                type="button"
-              >
-                Gauss's Law
-              </button>
-            </div>
-          </div>
-
-          <div className="math-examples">
-            <h4>Chemistry</h4>
-            <div className="equation-buttons">
-              <button onClick={() => insertSymbol("H_2O")} type="button">
-                Water Formula
-              </button>
-              <button
-                onClick={() => insertSymbol("n = \\frac{m}{M}")}
-                type="button"
-              >
-                Molar Mass
-              </button>
-              <button onClick={() => insertSymbol("PV = nRT")} type="button">
-                Ideal Gas Law
-              </button>
-              <button
-                onClick={() => insertSymbol("2H_2 + O_2 \\to 2H_2O")}
-                type="button"
-              >
-                Chemical Reaction
-              </button>
-              <button
-                onClick={() => insertSymbol("K_a = \\frac{[H^+][A^-]}{[HA]}")}
-                type="button"
-              >
-                Acid Constant
-              </button>
-            </div>
-          </div>
-
-          <div className="math-examples">
-            <h4>Geometry</h4>
-            <div className="equation-buttons">
-              <button
-                onClick={() => insertSymbol("\\angle ABC = 90^\\circ")}
-                type="button"
-              >
-                Right Angle
-              </button>
-              <button
-                onClick={() => insertSymbol("\\angle ABC = 180^\\circ")}
-                type="button"
-              >
-                Straight Angle
-              </button>
-              <button
-                onClick={() => insertSymbol("A = \\frac{1}{2}bh")}
-                type="button"
-              >
-                Triangle Area
-              </button>
-              <button onClick={() => insertSymbol("A = s^2")} type="button">
-                Square Area
-              </button>
-              <button onClick={() => insertSymbol("A = lw")} type="button">
-                Rectangle Area
-              </button>
-              <button
-                onClick={() => insertSymbol("V = \\frac{4}{3}\\pi r^3")}
-                type="button"
-              >
-                Sphere Volume
-              </button>
-              <button
-                onClick={() =>
-                  insertSymbol("\\triangle ABC \\cong \\triangle DEF")
-                }
-                type="button"
-              >
-                Congruent Triangles
-              </button>
-              <button
-                onClick={() => insertSymbol("AB \\parallel CD")}
-                type="button"
-              >
-                Parallel Lines
-              </button>
-              <button
-                onClick={() => insertSymbol("AB \\perp CD")}
-                type="button"
-              >
-                Perpendicular Lines
-              </button>
-            </div>
-          </div>
-
           <div className="math-editor">
             {React.createElement("math-field", {
               ref: mathFieldRef,
@@ -673,6 +474,24 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
               "smart-space": "on",
               "smart-command": "on",
             })}
+          </div>
+
+          <div className="math-toolbar-container">
+            {renderToolbar(toolbarSections[activeTab])}
+          </div>
+
+          <div className="math-examples">
+            <h4>General</h4>
+            <div className="equation-buttons">
+              <button
+                onClick={() =>
+                  insertSymbol("\\space")
+                }
+                type="button"
+              >
+                Spasi
+              </button>
+            </div>
           </div>
 
           <div className="math-display-mode-toggle">

@@ -1,13 +1,13 @@
-# react-latex-editor
+# react-latex-editor-custom-mhzn-v2
 
-[![npm version](https://img.shields.io/npm/v/react-latex-editor)](https://www.npmjs.com/package/react-latex-editor)
-[![npm downloads](https://img.shields.io/npm/dm/react-latex-editor)](https://www.npmjs.com/package/react-latex-editor)
-[![license](https://img.shields.io/npm/l/react-latex-editor)](./LICENSE)
+[![npm version](https://img.shields.io/npm/v/react-latex-editor-custom-mhzn-v2)](https://www.npmjs.com/package/react-latex-editor-custom-mhzn-v2)
+[![npm downloads](https://img.shields.io/npm/dm/react-latex-editor-custom-mhzn-v2)](https://www.npmjs.com/package/react-latex-editor-custom-mhzn-v2)
+[![license](https://img.shields.io/npm/l/react-latex-editor-custom-mhzn-v2)](./LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-ready-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
 A React WYSIWYG editor with first-class LaTeX math support. Built on [TipTap](https://tiptap.dev/) with [MathLive](https://cortexjs.io/mathlive/) for equation authoring and MathJax for read-only rendering.
 
-**[npm](https://www.npmjs.com/package/react-latex-editor)** · **[Issues](https://github.com/bablu22/react-latex-editor/issues)** · **[Changelog](https://github.com/bablu22/react-latex-editor/releases)**
+**[npm](https://www.npmjs.com/package/react-latex-editor-custom-mhzn-v2)** · **[Issues](https://github.com/muhzinasrori/react-latex-editor-custom-mhzn-v2-from-bablu-mia/issues)** · **[Changelog](https://github.com/muhzinasrori/react-latex-editor-custom-mhzn-v2-from-bablu-mia/releases)**
 
 ---
 
@@ -28,7 +28,7 @@ A React WYSIWYG editor with first-class LaTeX math support. Built on [TipTap](ht
 ## Installation
 
 ```bash
-npm install react-latex-editor
+npm install react-latex-editor-custom-mhzn-v2
 ```
 
 **Peer dependencies:** React 18+ or 19+
@@ -40,7 +40,7 @@ npm install react react-dom
 Import styles once in your app entry (or layout):
 
 ```tsx
-import "react-latex-editor/styles";
+import "react-latex-editor-custom-mhzn-v2/styles";
 ```
 
 ---
@@ -49,8 +49,8 @@ import "react-latex-editor/styles";
 
 ```tsx
 import { useRef, useState } from "react";
-import { Editor, Viewer, type EditorRef } from "react-latex-editor";
-import "react-latex-editor/styles";
+import { Editor, Viewer, type EditorRef } from "react-latex-editor-custom-mhzn-v2";
+import "react-latex-editor-custom-mhzn-v2/styles";
 
 export default function App() {
   const [content, setContent] = useState("<p></p>");
@@ -83,8 +83,8 @@ This package uses browser APIs (DOM, MathLive). Load it on the client only.
 "use client";
 
 import { useState } from "react";
-import { Editor } from "react-latex-editor";
-import "react-latex-editor/styles";
+import { Editor } from "react-latex-editor-custom-mhzn-v2";
+import "react-latex-editor-custom-mhzn-v2/styles";
 
 export default function MyEditor() {
   const [content, setContent] = useState("<p></p>");
@@ -98,7 +98,7 @@ export default function MyEditor() {
 import dynamic from "next/dynamic";
 
 const Editor = dynamic(
-  () => import("react-latex-editor").then((m) => m.Editor),
+  () => import("react-latex-editor-custom-mhzn-v2").then((m) => m.Editor),
   { ssr: false },
 );
 ```
@@ -128,7 +128,9 @@ editorRef.current?.addImage({
 });
 
 // SVG markup (same path as the toolbar “Paste SVG code” button)
-await editorRef.current?.addSvg(`<svg xmlns="http://www.w3.org/2000/svg">…</svg>`);
+await editorRef.current?.addSvg(
+  `<svg xmlns="http://www.w3.org/2000/svg">…</svg>`,
+);
 
 // Files from your own <input type="file">
 await editorRef.current?.addImagesFromFiles(fileList);
@@ -140,16 +142,20 @@ Use the equation button in the toolbar (or `Ctrl`/`Cmd`+`M`). Equations can be i
 
 ### Images and SVG
 
-| Action | Behavior |
-| --- | --- |
-| **Insert image** (toolbar) | Built-in picker (file / URL) unless you pass `onImageSelectionRequest` |
-| **Paste SVG code** (toolbar) | Opens a dialog to paste `<svg>…</svg>` markup — no extra setup |
-| Paste / drop | Image and SVG files, plus SVG markup, work in the editor surface |
-| Custom upload UI | Provide `onImageSelectionRequest`, then call `addImage` / `addImagesFromFiles` / `addSvg` on the ref |
+| Action                       | Behavior                                                                                             |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------- |
+| **Insert image** (toolbar)   | Built-in picker (file / URL) unless you pass `onImageSelectionRequest`                               |
+| **Paste SVG code** (toolbar) | Opens a dialog to paste `<svg>…</svg>` markup — no extra setup                                       |
+| Paste / drop                 | Image and SVG files, plus SVG markup, work in the editor surface                                     |
+| Custom upload UI             | Provide `onImageSelectionRequest`, then call `addImage` / `addImagesFromFiles` / `addSvg` on the ref |
 
 ```tsx
 import { useRef } from "react";
-import { Editor, IMAGE_ACCEPT, type EditorRef } from "react-latex-editor";
+import {
+  Editor,
+  IMAGE_ACCEPT,
+  type EditorRef,
+} from "react-latex-editor-custom-mhzn-v2";
 
 function EditorWithCustomUpload() {
   const editorRef = useRef<EditorRef>(null);
@@ -182,14 +188,14 @@ function EditorWithCustomUpload() {
 ### Viewer
 
 ```tsx
-import { Viewer } from "react-latex-editor";
+import { Viewer } from "react-latex-editor-custom-mhzn-v2";
 
 <Viewer
   content={html}
   className="viewer-shell"
   contentClassName="prose max-w-none"
   enableMath
-/>
+/>;
 ```
 
 - `className` — wrapper element
@@ -201,46 +207,46 @@ import { Viewer } from "react-latex-editor";
 
 ### `Editor` props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `initialContent` | `string` | `"<p></p>"` | Initial HTML |
-| `onChange` | `(html: string) => void` | — | Fires on every update |
-| `placeholder` | `string` | `"Start typing..."` | Empty-state placeholder |
-| `readOnly` | `boolean` | `false` | Disable editing |
-| `autoFocus` | `boolean` | `false` | Focus on mount |
-| `className` | `string` | `""` | Extra class on the editor |
-| `minHeight` | `string` | `"300px"` | Minimum editor height |
-| `maxHeight` | `string` | — | Max height (scrollable) |
-| `showCharacterCount` | `boolean` | `true` | Footer character / word stats |
-| `showTableControls` | `boolean` | `true` | Table editing chrome |
-| `onImageSelectionRequest` | `() => void` | — | Custom image picker; omit for built-in |
-| `onError` | `(error: Error) => void` | — | Error callback |
+| Prop                      | Type                     | Default             | Description                            |
+| ------------------------- | ------------------------ | ------------------- | -------------------------------------- |
+| `initialContent`          | `string`                 | `"<p></p>"`         | Initial HTML                           |
+| `onChange`                | `(html: string) => void` | —                   | Fires on every update                  |
+| `placeholder`             | `string`                 | `"Start typing..."` | Empty-state placeholder                |
+| `readOnly`                | `boolean`                | `false`             | Disable editing                        |
+| `autoFocus`               | `boolean`                | `false`             | Focus on mount                         |
+| `className`               | `string`                 | `""`                | Extra class on the editor              |
+| `minHeight`               | `string`                 | `"300px"`           | Minimum editor height                  |
+| `maxHeight`               | `string`                 | —                   | Max height (scrollable)                |
+| `showCharacterCount`      | `boolean`                | `true`              | Footer character / word stats          |
+| `showTableControls`       | `boolean`                | `true`              | Table editing chrome                   |
+| `onImageSelectionRequest` | `() => void`             | —                   | Custom image picker; omit for built-in |
+| `onError`                 | `(error: Error) => void` | —                   | Error callback                         |
 
 ### `EditorRef` methods
 
-| Method | Signature | Description |
-| --- | --- | --- |
-| `getHTML` | `() => string` | Serialized HTML |
-| `getJSON` | `() => Record<string, unknown>` | TipTap JSON document |
-| `getText` | `() => string` | Plain text |
-| `setContent` | `(content: string) => void` | Replace document |
-| `clearContent` | `() => void` | Empty the editor |
-| `focus` / `blur` | `() => void` | Focus management |
-| `isEmpty` | `() => boolean` | Whether the doc is empty |
-| `getEditor` | `() => Editor \| null` | Underlying TipTap instance |
-| `addImage` | `(input: ImageInsertInput) => void` | Insert image(s) or SVG figures |
-| `addSvg` | `(source: string \| File, options?) => Promise<void>` | Insert SVG from markup, URL, or file |
-| `addImagesFromFiles` | `(files: FileList \| File[]) => Promise<void>` | Insert from a file list (data URLs) |
+| Method               | Signature                                             | Description                          |
+| -------------------- | ----------------------------------------------------- | ------------------------------------ |
+| `getHTML`            | `() => string`                                        | Serialized HTML                      |
+| `getJSON`            | `() => Record<string, unknown>`                       | TipTap JSON document                 |
+| `getText`            | `() => string`                                        | Plain text                           |
+| `setContent`         | `(content: string) => void`                           | Replace document                     |
+| `clearContent`       | `() => void`                                          | Empty the editor                     |
+| `focus` / `blur`     | `() => void`                                          | Focus management                     |
+| `isEmpty`            | `() => boolean`                                       | Whether the doc is empty             |
+| `getEditor`          | `() => Editor \| null`                                | Underlying TipTap instance           |
+| `addImage`           | `(input: ImageInsertInput) => void`                   | Insert image(s) or SVG figures       |
+| `addSvg`             | `(source: string \| File, options?) => Promise<void>` | Insert SVG from markup, URL, or file |
+| `addImagesFromFiles` | `(files: FileList \| File[]) => Promise<void>`        | Insert from a file list (data URLs)  |
 
 ### `Viewer` props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `content` | `string` | — | HTML to display |
-| `className` | `string` | `""` | Wrapper class |
-| `contentClassName` | `string` | `""` | Content class |
-| `enableMath` | `boolean` | `true` | Enable MathJax |
-| `mathJaxConfig` | `object` | `{}` | MathJax overrides |
+| Prop               | Type      | Default | Description       |
+| ------------------ | --------- | ------- | ----------------- |
+| `content`          | `string`  | —       | HTML to display   |
+| `className`        | `string`  | `""`    | Wrapper class     |
+| `contentClassName` | `string`  | `""`    | Content class     |
+| `enableMath`       | `boolean` | `true`  | Enable MathJax    |
+| `mathJaxConfig`    | `object`  | `{}`    | MathJax overrides |
 
 ### Notable exports
 
@@ -256,7 +262,7 @@ import {
   type EditorRef,
   type ImageInsertItem,
   type ImageInsertInput,
-} from "react-latex-editor";
+} from "react-latex-editor-custom-mhzn-v2";
 ```
 
 ---
@@ -266,7 +272,11 @@ import {
 **Minimal**
 
 ```tsx
-<Editor onChange={setContent} showCharacterCount={false} showTableControls={false} />
+<Editor
+  onChange={setContent}
+  showCharacterCount={false}
+  showTableControls={false}
+/>
 ```
 
 **Fixed height**
@@ -299,14 +309,14 @@ import {
 
 ## Troubleshooting
 
-| Issue | Fix |
-| --- | --- |
-| Unstyled editor | Import `react-latex-editor/styles` |
-| Next.js `window is not defined` | Use `"use client"` or `dynamic(..., { ssr: false })` |
-| Math missing in Viewer | Keep `enableMath` enabled (default); check that content includes math nodes from the Editor |
-| Custom image button does nothing | Call `addImagesFromFiles` / `addImage` / `addSvg` inside your `onImageSelectionRequest` handler |
-| SVG not inserting | Use the **Paste SVG code** toolbar button, or `addSvg` with full `<svg>…</svg>` markup |
-| `getStyleProperty` / TipTap export errors | Caused by mixing TipTap v2 and v3 in the host app. Use `react-latex-editor@2.0.1+` (TipTap is pinned and bundled). Delete `node_modules` + lockfile and reinstall, or align all `@tiptap/*` packages to the same major. |
+| Issue                                     | Fix                                                                                                                                                                                                                                 |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Unstyled editor                           | Import `react-latex-editor-custom-mhzn-v2/styles`                                                                                                                                                                                      |
+| Next.js `window is not defined`           | Use `"use client"` or `dynamic(..., { ssr: false })`                                                                                                                                                                                |
+| Math missing in Viewer                    | Keep `enableMath` enabled (default); check that content includes math nodes from the Editor                                                                                                                                         |
+| Custom image button does nothing          | Call `addImagesFromFiles` / `addImage` / `addSvg` inside your `onImageSelectionRequest` handler                                                                                                                                     |
+| SVG not inserting                         | Use the **Paste SVG code** toolbar button, or `addSvg` with full `<svg>…</svg>` markup                                                                                                                                              |
+| `getStyleProperty` / TipTap export errors | Caused by mixing TipTap v2 and v3 in the host app. Use `react-latex-editor-custom-mhzn-v2@2.0.1+` (TipTap is pinned and bundled). Delete `node_modules` + lockfile and reinstall, or align all `@tiptap/*` packages to the same major. |
 
 ---
 
