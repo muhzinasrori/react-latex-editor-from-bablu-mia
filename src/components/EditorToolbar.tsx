@@ -1,14 +1,11 @@
 import AlignmentControls from "./toolbars/AlignmentControls";
-import BlockControls from "./toolbars/BlockControls";
-import ColorControls from "./toolbars/ColorControls";
-import FontControls from "./toolbars/FontControls";
-import HeadingControls from "./toolbars/HeadingControls";
 import HistoryControls from "./toolbars/HistoryControls";
+import ListControls from "./toolbars/ListControls";
+import TextFormattingControls from "./toolbars/TextFormattingControls";
+import EquationControl from "./toolbars/EquationControl";
+import MoreControls from "./toolbars/MoreControls";
 import ImageAlignmentControls from "./toolbars/ImageAlignmentControls";
 import ImageGroupAlignmentControls from "./toolbars/ImageGroupAlignmentControls";
-import ListControls from "./toolbars/ListControls";
-import SpecialFeaturesControls from "./toolbars/SpecialFeaturesControls";
-import TextFormattingControls from "./toolbars/TextFormattingControls";
 import YouTubeControls from "./toolbars/YouTubeControls";
 import ToolbarDivider from "./toolbars/ToolbarDivider";
 import { useEditorForceUpdate } from "../hooks/useEditorForceUpdate";
@@ -33,26 +30,43 @@ const EditorToolbar = (props: EditorToolbarProps) => {
       aria-label="Editor toolbar"
     >
       <div className="toolbar-row flex flex-wrap items-center gap-1.5 w-full min-h-[32px]">
+        {/* 1. History: Undo, Redo */}
         <HistoryControls editor={editor} readOnly={readOnly} />
+
         <ToolbarDivider />
-        <TextFormattingControls editor={editor} readOnly={readOnly} />
+
+        {/* 2. Primary Text Formatting: Bold, Italic, Strike, Underline, Clear formatting */}
+        <TextFormattingControls editor={editor} readOnly={readOnly} variant="primary" />
+
         <ToolbarDivider />
-        <ColorControls editor={editor} readOnly={readOnly} />
-        <ToolbarDivider />
-        <FontControls editor={editor} readOnly={readOnly} />
-        <HeadingControls editor={editor} readOnly={readOnly} />
-        <ToolbarDivider />
+
+        {/* 3. Paragraph Alignment: Left, Center, Right, Justify */}
         <AlignmentControls editor={editor} readOnly={readOnly} />
-        <ListControls editor={editor} readOnly={readOnly} />
+
         <ToolbarDivider />
-        <BlockControls editor={editor} readOnly={readOnly} />
+
+        {/* 4. Lists: Bullet list (dot), Numbered list (angka 123) */}
+        <ListControls editor={editor} readOnly={readOnly} variant="primary" />
+
         <ToolbarDivider />
-        <SpecialFeaturesControls
+
+        {/* 5. Equation */}
+        <EquationControl
           editor={editor}
           readOnly={readOnly}
-          onMathDialogOpen={onMathDialogOpen ?? (() => {})}
-          onImagePicker={onImagePicker ?? (() => {})}
+          onMathDialogOpen={onMathDialogOpen}
         />
+
+        <ToolbarDivider />
+
+        {/* 6. Three-dots menu (Menu titik tiga) for all remaining tools */}
+        <MoreControls
+          editor={editor}
+          readOnly={readOnly}
+          onImagePicker={onImagePicker}
+        />
+
+        {/* Contextual controls for selected media */}
         <ImageAlignmentControls editor={editor} readOnly={readOnly} />
         <ImageGroupAlignmentControls editor={editor} readOnly={readOnly} />
         <YouTubeControls editor={editor} readOnly={readOnly} />
