@@ -42,8 +42,8 @@ export default defineConfig({
           mathlive: "MathLive",
         },
         assetFileNames: (assetInfo) => {
-          if (assetInfo.name === "style.css") {
-            return "react-latex-editor.css";
+          if (assetInfo.name === "style.css" || assetInfo.name?.endsWith(".css")) {
+            return "react-latex-editor-custom-mhzn-v2.css";
           }
           return assetInfo.name || "asset";
         },

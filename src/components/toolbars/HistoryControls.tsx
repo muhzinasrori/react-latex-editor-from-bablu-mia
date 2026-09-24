@@ -8,7 +8,11 @@ interface HistoryControlsProps {
 
 const HistoryControls = ({ editor, readOnly }: HistoryControlsProps) => {
   return (
-    <div className="toolbar-group" role="group" aria-label="History">
+    <div
+      className="toolbar-group inline-flex items-stretch gap-0 p-[2px] m-0 border border-zinc-300 bg-white rounded-lg shadow-xs flex-nowrap divide-x divide-zinc-200"
+      role="group"
+      aria-label="History"
+    >
       <ToolbarButton
         onClick={() => editor?.chain().focus().undo().run()}
         title="Undo"

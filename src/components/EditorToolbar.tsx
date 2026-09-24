@@ -27,8 +27,12 @@ const EditorToolbar = (props: EditorToolbarProps) => {
   useEditorForceUpdate(editor);
 
   return (
-    <div className="toolbar" role="toolbar" aria-label="Editor toolbar">
-      <div className="toolbar-row">
+    <div
+      className="toolbar sticky top-0 z-10 block p-2 bg-zinc-100/90 backdrop-blur-xs border-b border-zinc-200 rounded-t-xl"
+      role="toolbar"
+      aria-label="Editor toolbar"
+    >
+      <div className="toolbar-row flex flex-wrap items-center gap-1.5 w-full min-h-[32px]">
         <HistoryControls editor={editor} readOnly={readOnly} />
         <ToolbarDivider />
         <TextFormattingControls editor={editor} readOnly={readOnly} />

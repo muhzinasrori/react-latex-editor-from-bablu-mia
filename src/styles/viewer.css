@@ -1,3 +1,5 @@
+@import "./tailwind.css";
+
 .editor-viewer {
   width: 100%;
   /* max-width: 1000px !important; */

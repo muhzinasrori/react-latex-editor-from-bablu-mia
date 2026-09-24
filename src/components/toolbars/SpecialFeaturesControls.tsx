@@ -73,7 +73,11 @@ const SpecialFeaturesControls = ({
 
   return (
     <>
-      <div className="toolbar-group" role="group" aria-label="Insert">
+      <div
+        className="toolbar-group inline-flex items-stretch gap-0 p-[2px] m-0 border border-zinc-300 bg-white rounded-lg shadow-xs flex-nowrap divide-x divide-zinc-200"
+        role="group"
+        aria-label="Insert"
+      >
         <ToolbarButton
           onClick={onMathDialogOpen}
           title="Insert equation"
@@ -147,58 +151,65 @@ const SpecialFeaturesControls = ({
       {showSvgDialog && (
         <ModalPortal>
           <div
-            className="image-dialog-overlay"
+            className="image-dialog-overlay fixed inset-0 z-[2147483000] flex items-center justify-center p-4 bg-slate-900/55 backdrop-blur-xs overflow-auto"
             onClick={closeSvgDialog}
             role="presentation"
           >
-          <div
-            className="image-dialog"
-            onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="svg-paste-dialog-title"
-          >
-            <h3 id="svg-paste-dialog-title">Paste SVG code</h3>
-            {svgError && (
-              <p className="image-dialog-error" role="alert">
-                {svgError}
-              </p>
-            )}
-            <div>
-              <label htmlFor="toolbar-svg-markup-input" className="sr-only">
-                SVG markup
-              </label>
-              <textarea
-                id="toolbar-svg-markup-input"
-                className="image-dialog-svg-input"
-                placeholder={'<svg xmlns="http://www.w3.org/2000/svg" ...>...</svg>'}
-                value={svgMarkup}
-                onChange={(e) => {
-                  setSvgMarkup(e.target.value);
-                  setSvgError(null);
-                }}
-                onKeyDown={handleSvgKeyDown}
-                rows={10}
-                autoFocus
-              />
-              <div className="image-dialog-buttons">
-                <button
-                  type="button"
-                  disabled={!svgMarkup.trim()}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    void handleSvgInsert();
+            <div
+              className="image-dialog relative flex flex-col w-full max-w-[520px] max-h-[90vh] bg-white rounded-xl shadow-2xl p-5 border border-slate-200 overflow-y-auto text-slate-800"
+              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="svg-paste-dialog-title"
+            >
+              <h3 id="svg-paste-dialog-title" className="text-base font-semibold text-slate-900 mb-3">
+                Paste SVG code
+              </h3>
+              {svgError && (
+                <p className="image-dialog-error p-2.5 mb-3 text-xs text-red-700 bg-red-50 border border-red-200 rounded-lg" role="alert">
+                  {svgError}
+                </p>
+              )}
+              <div>
+                <label htmlFor="toolbar-svg-markup-input" className="sr-only">
+                  SVG markup
+                </label>
+                <textarea
+                  id="toolbar-svg-markup-input"
+                  className="image-dialog-svg-input w-full min-h-[160px] p-3 text-xs font-mono text-slate-800 bg-slate-50 border border-slate-300 rounded-lg focus:bg-white focus:ring-2 focus:ring-teal-600 focus:border-teal-600 outline-none resize-y"
+                  placeholder={'<svg xmlns="http://www.w3.org/2000/svg" ...>...</svg>'}
+                  value={svgMarkup}
+                  onChange={(e) => {
+                    setSvgMarkup(e.target.value);
+                    setSvgError(null);
                   }}
-                >
-                  Insert SVG
-                </button>
-                <button type="button" onClick={closeSvgDialog}>
-                  Cancel
-                </button>
+                  onKeyDown={handleSvgKeyDown}
+                  rows={10}
+                  autoFocus
+                />
+                <div className="image-dialog-buttons flex items-center justify-end gap-2 mt-4">
+                  <button
+                    type="button"
+                    className="px-4 py-2 text-xs font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 active:bg-teal-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                    disabled={!svgMarkup.trim()}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      void handleSvgInsert();
+                    }}
+                  >
+                    Insert SVG
+                  </button>
+                  <button
+                    type="button"
+                    className="px-4 py-2 text-xs font-medium text-slate-700 bg-slate-100 border border-slate-200 rounded-lg hover:bg-slate-200 transition-colors cursor-pointer"
+                    onClick={closeSvgDialog}
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
           </div>
         </ModalPortal>
       )}

@@ -244,17 +244,20 @@ export const Viewer = ({
   }, []);
 
   return (
-    <div className={`editor-viewer ${className}`.trim()} ref={viewerRef}>
+    <div
+      className={`editor-viewer w-full max-w-full text-zinc-800 text-base leading-relaxed break-words font-sans ${className}`.trim()}
+      ref={viewerRef}
+    >
       <div
-        className={`viewer-content prose ${contentClassName}`.trim()}
+        className={`viewer-content prose max-w-none break-words ${contentClassName}`.trim()}
       />
 
       {mathJaxError && (
-        <div className="error-message" role="alert">
-          <p>{mathJaxError}</p>
+        <div className="error-message flex items-center justify-between gap-3 p-3 mt-2 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg" role="alert">
+          <p className="m-0">{mathJaxError}</p>
           <button
             onClick={handleMathError}
-            className="error-close"
+            className="error-close text-red-500 hover:text-red-800 text-lg leading-none cursor-pointer p-1"
             aria-label="Close error message"
             type="button"
           >

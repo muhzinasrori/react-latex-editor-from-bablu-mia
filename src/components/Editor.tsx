@@ -292,9 +292,9 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
 
   return (
     <ErrorBoundary>
-      <div className={`editor-shell ${className}`.trim()}>
+      <div className={`editor-shell relative w-full ${className}`.trim()}>
         <div
-          className="custom-editor"
+          className="custom-editor relative flex flex-col min-h-[300px] bg-white border border-zinc-200 rounded-xl shadow-xs transition-colors duration-200 focus-within:border-teal-600 focus-within:ring-2 focus-within:ring-teal-100 font-sans text-zinc-800 text-[15px] leading-relaxed"
           style={editorStyle}
           role="application"
           aria-label="Rich text editor"
@@ -306,7 +306,7 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
             onImagePicker={handleImagePicker}
           />
 
-          <EditorContent editor={editor} className="editor-content" />
+          <EditorContent editor={editor} className="editor-content flex-1 p-4 md:p-5 outline-none min-h-[200px]" />
 
           <LoadingOverlay isLoading={isImageLoading} />
 
@@ -344,11 +344,11 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
         />
 
         {error && (
-          <div className="error-message" role="alert">
-            <p>{error.message}</p>
+          <div className="error-message flex items-center justify-between gap-3 p-3 mt-2 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg" role="alert">
+            <p className="m-0">{error.message}</p>
             <button
               onClick={handleCloseError}
-              className="error-close"
+              className="error-close text-red-500 hover:text-red-800 text-lg leading-none cursor-pointer p-1"
               aria-label="Close error message"
               type="button"
             >

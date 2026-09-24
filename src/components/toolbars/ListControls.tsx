@@ -8,7 +8,11 @@ interface ListControlsProps {
 
 const ListControls = ({ editor, readOnly }: ListControlsProps) => {
   return (
-    <div className="toolbar-group" role="group" aria-label="Lists">
+    <div
+      className="toolbar-group inline-flex items-stretch gap-0 p-[2px] m-0 border border-zinc-300 bg-white rounded-lg shadow-xs flex-nowrap divide-x divide-zinc-200"
+      role="group"
+      aria-label="Lists"
+    >
       <ToolbarButton
         onClick={() => editor?.chain().focus().toggleBulletList().run()}
         isActive={editor?.isActive("bulletList")}

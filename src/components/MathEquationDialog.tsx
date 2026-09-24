@@ -394,13 +394,13 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
 
     const renderToolbar = useCallback(
       (symbols: SymbolItem[]) => (
-        <div className="math-toolbar-grid">
+        <div className="math-toolbar-grid grid grid-cols-[repeat(auto-fill,minmax(36px,1fr))] gap-2 p-0.5">
           {symbols.map((item: SymbolItem, index: number) => (
             <button
               key={index}
               onClick={() => insertSymbol(item.symbol)}
               title={item.title}
-              className="math-symbol-button"
+              className="math-symbol-button aspect-square min-w-[36px] flex items-center justify-center text-sm font-medium text-slate-800 bg-white border border-slate-200 rounded-md hover:bg-slate-100 hover:border-slate-300 active:bg-slate-200 transition-colors cursor-pointer"
               type="button"
             >
               {item.display}
@@ -414,22 +414,24 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
     return (
       <ModalPortal>
         <div
-          className="math-dialog-overlay"
+          className="math-dialog-overlay fixed inset-0 z-[2147483000] flex items-center justify-center p-4 bg-slate-900/55 backdrop-blur-xs overflow-auto"
           onClick={onClose}
           role="presentation"
         >
           <div
-            className="math-dialog"
+            className="math-dialog relative flex flex-col w-full max-w-[700px] max-h-[90vh] bg-white rounded-xl shadow-2xl overflow-hidden border border-slate-200 font-sans text-slate-900"
             ref={dialogRef}
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
             aria-labelledby="math-dialog-title"
           >
-          <div className="math-dialog-header">
-            <h3 id="math-dialog-title">Insert Math Equation</h3>
+          <div className="math-dialog-header flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-200 shrink-0">
+            <h3 id="math-dialog-title" className="text-base font-semibold text-slate-900 m-0">
+              Insert Math Equation
+            </h3>
             <button
-              className="close-button"
+              className="close-button flex items-center justify-center w-7 h-7 text-xl leading-none text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 rounded-md transition-colors cursor-pointer"
               onClick={onClose}
               type="button"
               aria-label="Close dialog"
@@ -438,12 +440,16 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
             </button>
           </div>
 
-          <div className="math-toolbar-tabs">
+          <div className="math-toolbar-tabs flex flex-wrap gap-1 px-3 py-2 bg-slate-50/70 border-b border-slate-200 shrink-0">
             {(Object.keys(toolbarSections) as Array<keyof TabSections>).map(
               (tab) => (
                 <button
                   key={tab}
-                  className={`tab-button ${activeTab === tab ? "active" : ""}`}
+                  className={`tab-button px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer ${
+                    activeTab === tab
+                      ? "active bg-blue-600 text-white hover:bg-blue-700"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/70"
+                  }`}
                   onClick={() => setActiveTab(tab)}
                   type="button"
                 >
@@ -453,13 +459,13 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
             )}
           </div>
 
-          <div className="math-editor">
+          <div className="math-editor p-3.5 border-b border-slate-200 shrink-0">
             {React.createElement("math-field", {
               ref: mathFieldRef,
               value: latex,
               onInput: handleInput,
               "virtual-keyboard-mode": "manual",
-              className: "math-dialog-math-field",
+              className: "math-dialog-math-field block w-full min-h-[52px] p-2.5 text-base bg-white border-2 border-slate-200 rounded-lg focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-all",
               "math-mode": "latex",
               "smart-mode": "on",
               "smart-fence": "on",
@@ -476,17 +482,20 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
             })}
           </div>
 
-          <div className="math-toolbar-container">
+          <div className="math-toolbar-container p-2.5 border-b border-slate-200 max-h-[140px] overflow-y-auto shrink-0">
             {renderToolbar(toolbarSections[activeTab])}
           </div>
 
-          <div className="math-examples">
-            <h4>General</h4>
-            <div className="equation-buttons">
+          <div className="math-examples p-2.5 border-b border-slate-200 max-h-[140px] overflow-y-auto shrink-0">
+            <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 m-0 mb-2">
+              General
+            </h4>
+            <div className="equation-buttons flex flex-wrap gap-1.5">
               <button
                 onClick={() =>
                   insertSymbol("\\space")
                 }
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
                 type="button"
               >
                 Spasi
@@ -494,24 +503,25 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
             </div>
           </div>
 
-          <div className="math-display-mode-toggle">
-            <label>
+          <div className="math-display-mode-toggle flex items-center justify-between gap-3 px-4 py-2.5 text-xs text-slate-600 shrink-0">
+            <label className="inline-flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 checked={displayMode}
                 onChange={(e) => setDisplayMode(e.target.checked)}
+                className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
               />
               Display as centered block (still allows text before/after)
             </label>
-            <span className="math-dialog-hint">Tip: Ctrl/Cmd + Enter to insert</span>
+            <span className="math-dialog-hint text-[11px] text-slate-400">Tip: Ctrl/Cmd + Enter to insert</span>
           </div>
 
-          <div className="math-dialog-footer">
-            <button className="cancel-button" onClick={onClose} type="button">
+          <div className="math-dialog-footer flex items-center justify-end gap-2 px-4 py-3 bg-slate-50 border-t border-slate-200 rounded-b-xl shrink-0">
+            <button className="cancel-button px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer" onClick={onClose} type="button">
               Cancel
             </button>
             <button
-              className="save-button"
+              className="save-button px-4 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-xs"
               onClick={handleSave}
               type="button"
               disabled={isInserting || !latex.trim()}

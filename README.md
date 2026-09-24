@@ -22,6 +22,7 @@ A React WYSIWYG editor with first-class LaTeX math support. Built on [TipTap](ht
 - **Viewer** — read-only rendering with MathJax
 - **TypeScript** — full type definitions included
 - **Accessible toolbar** — keyboard shortcuts and ARIA labels
+- **Tailwind CSS powered** — styled with modern Tailwind CSS utility classes, pre-compiled into a self-contained CSS bundle
 
 ---
 

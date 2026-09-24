@@ -19,7 +19,11 @@ const ImageAlignmentControls = ({
   if (!editor?.isActive("image") || editor?.isActive("imageGroup")) return null;
 
   return (
-    <div className="toolbar-group" role="group" aria-label="Image alignment">
+    <div
+      className="toolbar-group inline-flex items-stretch gap-0 p-[2px] m-0 border border-zinc-300 bg-white rounded-lg shadow-xs flex-nowrap divide-x divide-zinc-200"
+      role="group"
+      aria-label="Image alignment"
+    >
       <ToolbarButton
         onClick={() =>
           editor

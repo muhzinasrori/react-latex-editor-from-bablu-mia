@@ -135,30 +135,38 @@ const ResizableYoutubeView: React.FC<ResizableYoutubeViewProps> = ({
         {selected && (
           <>
             <div
-              className="resize-handle resize-handle-bottom-right"
+              className="resize-handle resize-handle-bottom-right absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-blue-600 border border-white rounded-xs shadow-xs cursor-nwse-resize z-10"
               onMouseDown={(e) => handleMouseDown(e, "bottom-right")}
               aria-hidden="true"
             />
             <div
-              className="resize-handle resize-handle-bottom-left"
+              className="resize-handle resize-handle-bottom-left absolute -bottom-1 -left-1 w-2.5 h-2.5 bg-blue-600 border border-white rounded-xs shadow-xs cursor-nesw-resize z-10"
               onMouseDown={(e) => handleMouseDown(e, "bottom-left")}
               aria-hidden="true"
             />
             <div
-              className="resize-handle resize-handle-top-right"
+              className="resize-handle resize-handle-top-right absolute -top-1 -right-1 w-2.5 h-2.5 bg-blue-600 border border-white rounded-xs shadow-xs cursor-nesw-resize z-10"
               onMouseDown={(e) => handleMouseDown(e, "top-right")}
               aria-hidden="true"
             />
             <div
-              className="resize-handle resize-handle-top-left"
+              className="resize-handle resize-handle-top-left absolute -top-1 -left-1 w-2.5 h-2.5 bg-blue-600 border border-white rounded-xs shadow-xs cursor-nwse-resize z-10"
               onMouseDown={(e) => handleMouseDown(e, "top-left")}
               aria-hidden="true"
             />
 
-            <div className="alignment-controls" role="group" aria-label="Video alignment">
+            <div
+              className="alignment-controls absolute -top-8.5 left-0 z-20 flex gap-1 p-1 bg-white border border-zinc-200 rounded-md shadow-md"
+              role="group"
+              aria-label="Video alignment"
+            >
               <button
                 onClick={() => handleAlignChange("left")}
-                className={align === "left" ? "is-active" : ""}
+                className={`px-2 py-0.5 text-xs font-semibold rounded transition-colors cursor-pointer ${
+                  align === "left"
+                    ? "bg-blue-600 text-white is-active"
+                    : "text-blue-600 hover:bg-blue-50"
+                }`}
                 type="button"
                 aria-label="Align left"
                 aria-pressed={align === "left"}
@@ -167,7 +175,11 @@ const ResizableYoutubeView: React.FC<ResizableYoutubeViewProps> = ({
               </button>
               <button
                 onClick={() => handleAlignChange("center")}
-                className={align === "center" ? "is-active" : ""}
+                className={`px-2 py-0.5 text-xs font-semibold rounded transition-colors cursor-pointer ${
+                  align === "center"
+                    ? "bg-blue-600 text-white is-active"
+                    : "text-blue-600 hover:bg-blue-50"
+                }`}
                 type="button"
                 aria-label="Align center"
                 aria-pressed={align === "center"}
@@ -176,7 +188,11 @@ const ResizableYoutubeView: React.FC<ResizableYoutubeViewProps> = ({
               </button>
               <button
                 onClick={() => handleAlignChange("right")}
-                className={align === "right" ? "is-active" : ""}
+                className={`px-2 py-0.5 text-xs font-semibold rounded transition-colors cursor-pointer ${
+                  align === "right"
+                    ? "bg-blue-600 text-white is-active"
+                    : "text-blue-600 hover:bg-blue-50"
+                }`}
                 type="button"
                 aria-label="Align right"
                 aria-pressed={align === "right"}

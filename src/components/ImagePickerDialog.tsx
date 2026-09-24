@@ -145,17 +145,23 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
 
   return (
     <ModalPortal>
-      <div className="image-dialog-overlay" onClick={onClose} role="presentation">
+      <div
+        className="image-dialog-overlay fixed inset-0 z-[2147483000] flex items-center justify-center p-4 bg-slate-900/55 backdrop-blur-xs overflow-auto"
+        onClick={onClose}
+        role="presentation"
+      >
         <div
-          className="image-dialog"
+          className="image-dialog relative flex flex-col w-full max-w-[520px] max-h-[90vh] bg-white rounded-xl shadow-2xl p-6 border border-slate-200 overflow-y-auto text-slate-800 font-sans"
           onClick={(e) => e.stopPropagation()}
           role="dialog"
           aria-modal="true"
           aria-labelledby="image-dialog-title"
         >
-        <h3 id="image-dialog-title">Insert Image / SVG</h3>
+        <h3 id="image-dialog-title" className="text-base font-semibold text-slate-900 m-0 mb-4">
+          Insert Image / SVG
+        </h3>
 
-        <div className="image-dialog-tabs" role="tablist">
+        <div className="image-dialog-tabs flex border-b border-slate-200 mb-4 gap-1" role="tablist">
           {(
             [
               ["upload", "Upload"],
@@ -168,7 +174,11 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
               type="button"
               role="tab"
               aria-selected={tab === id}
-              className={`image-dialog-tab${tab === id ? " is-active" : ""}`}
+              className={`image-dialog-tab px-4 py-2 text-xs font-medium border-b-2 transition-colors cursor-pointer -mb-px ${
+                tab === id
+                  ? "border-blue-600 text-blue-600 font-semibold is-active"
+                  : "border-transparent text-slate-500 hover:text-slate-800"
+              }`}
               onClick={() => {
                 setTab(id);
                 setError(null);
@@ -180,16 +190,16 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
         </div>
 
         {error && (
-          <p className="image-dialog-error" role="alert">
+          <p className="image-dialog-error p-3 mb-4 text-xs text-red-700 bg-red-50 border border-red-200 rounded-lg" role="alert">
             {error}
           </p>
         )}
 
         {tab === "upload" && (
-          <div className="image-dialog-upload">
+          <div className="image-dialog-upload flex flex-col items-center justify-center p-6 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50/50 hover:bg-slate-50 transition-colors text-center">
             <button
               type="button"
-              className="image-dialog-upload-btn"
+              className="image-dialog-upload-btn px-5 py-2.5 text-xs font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50 transition-colors cursor-pointer shadow-xs mb-3"
               disabled={isLoading}
               onClick={() => {
                 if (onUploadClick) {
@@ -210,11 +220,11 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
               onChange={handleFileUpload}
               hidden
             />
-            <p className="image-dialog-hint">
+            <p className="image-dialog-hint text-xs text-slate-500 m-0 mb-1">
               JPG, PNG, GIF, WebP, <strong>SVG</strong> · max{" "}
               {formatFileSize(MAX_FILE_SIZE.image)}
             </p>
-            <p className="image-dialog-hint">
+            <p className="image-dialog-hint text-[11px] text-slate-400 m-0">
               Ideal for math figures, graphs, and diagrams exported as SVG.
             </p>
           </div>
@@ -228,6 +238,7 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
             <input
               id="image-url-input"
               type="url"
+              className="w-full px-3 py-2 text-sm text-slate-800 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all mb-4"
               placeholder="https://example.com/figure.svg"
               value={imageUrl}
               onChange={(e) => {
@@ -244,9 +255,10 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
               disabled={isLoading}
               autoComplete="off"
             />
-            <div className="image-dialog-buttons">
+            <div className="image-dialog-buttons flex items-center justify-end gap-2">
               <button
                 type="button"
+                className="px-4 py-2 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer shadow-xs"
                 disabled={!imageUrl.trim() || isLoading}
                 onClick={(e) => {
                   e.preventDefault();
@@ -256,7 +268,11 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
               >
                 {isLoading ? "Loading..." : "Insert URL"}
               </button>
-              <button type="button" onClick={onClose}>
+              <button
+                type="button"
+                className="px-4 py-2 text-xs font-medium text-slate-700 bg-slate-100 border border-slate-200 rounded-lg hover:bg-slate-200 transition-colors cursor-pointer"
+                onClick={onClose}
+              >
                 Cancel
               </button>
             </div>
@@ -270,7 +286,7 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
             </label>
             <textarea
               id="svg-markup-input"
-              className="image-dialog-svg-input"
+              className="image-dialog-svg-input w-full min-h-[160px] p-3 text-xs font-mono text-slate-800 bg-slate-50 border border-slate-300 rounded-lg focus:bg-white focus:ring-2 focus:ring-teal-600 focus:border-teal-600 outline-none resize-y mb-4"
               placeholder={'<svg xmlns="http://www.w3.org/2000/svg" ...>...</svg>'}
               value={svgMarkup}
               onChange={(e) => {
@@ -286,9 +302,10 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
               }}
               rows={8}
             />
-            <div className="image-dialog-buttons">
+            <div className="image-dialog-buttons flex items-center justify-end gap-2">
               <button
                 type="button"
+                className="px-4 py-2 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer shadow-xs"
                 disabled={!svgMarkup.trim()}
                 onClick={(e) => {
                   e.preventDefault();
@@ -298,7 +315,11 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
               >
                 Insert SVG
               </button>
-              <button type="button" onClick={onClose}>
+              <button
+                type="button"
+                className="px-4 py-2 text-xs font-medium text-slate-700 bg-slate-100 border border-slate-200 rounded-lg hover:bg-slate-200 transition-colors cursor-pointer"
+                onClick={onClose}
+              >
                 Cancel
               </button>
             </div>

@@ -29,7 +29,11 @@ const TextFormattingControls = ({
   };
 
   return (
-    <div className="toolbar-group" role="group" aria-label="Text formatting">
+    <div
+      className="toolbar-group inline-flex items-stretch gap-0 p-[2px] m-0 border border-zinc-300 bg-white rounded-lg shadow-xs flex-nowrap divide-x divide-zinc-200"
+      role="group"
+      aria-label="Text formatting"
+    >
       <ToolbarButton
         onClick={() => editor?.chain().focus().toggleBold().run()}
         isActive={editor?.isActive("bold")}

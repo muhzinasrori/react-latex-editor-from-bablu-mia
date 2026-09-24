@@ -173,17 +173,14 @@ const ResizableImageView: React.FC<ResizableImageViewProps> = ({
           position: "relative",
         }}
       >
-        {isSvg && <span className="svg-badge">SVG</span>}
+        {isSvg && (
+          <span className="svg-badge absolute top-1 left-1 px-1.5 py-0.5 text-[10px] font-bold bg-teal-600 text-white rounded uppercase shadow-xs pointer-events-none z-10">
+            SVG
+          </span>
+        )}
         {inlineSvgMarkup ? (
           <div
-            className="inline-svg-host"
-            style={{
-              display: "block",
-              width: "100%",
-              maxWidth: "100%",
-              height: "auto",
-              userSelect: "none",
-            }}
+            className="inline-svg-host block w-full max-w-full h-auto select-none"
             dangerouslySetInnerHTML={{ __html: inlineSvgMarkup }}
             aria-label={node.attrs.alt || "SVG figure"}
           />
@@ -195,12 +192,9 @@ const ResizableImageView: React.FC<ResizableImageViewProps> = ({
             width={isSvg ? undefined : node.attrs.width}
             height={isSvg ? undefined : node.attrs.height}
             draggable={false}
+            className="block max-w-full h-auto select-none"
             style={{
-              display: "block",
-              maxWidth: "100%",
               width: isSvg ? "100%" : undefined,
-              height: "auto",
-              userSelect: "none",
             }}
           />
         )}
@@ -208,22 +202,22 @@ const ResizableImageView: React.FC<ResizableImageViewProps> = ({
         {selected && !isSvg && (
           <>
             <div
-              className="resize-handle resize-handle-bottom-right"
+              className="resize-handle resize-handle-bottom-right absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-blue-600 border border-white rounded-xs shadow-xs cursor-nwse-resize z-10"
               onMouseDown={(e) => handleMouseDown(e, "bottom-right")}
               aria-hidden="true"
             />
             <div
-              className="resize-handle resize-handle-bottom-left"
+              className="resize-handle resize-handle-bottom-left absolute -bottom-1 -left-1 w-2.5 h-2.5 bg-blue-600 border border-white rounded-xs shadow-xs cursor-nesw-resize z-10"
               onMouseDown={(e) => handleMouseDown(e, "bottom-left")}
               aria-hidden="true"
             />
             <div
-              className="resize-handle resize-handle-top-right"
+              className="resize-handle resize-handle-top-right absolute -top-1 -right-1 w-2.5 h-2.5 bg-blue-600 border border-white rounded-xs shadow-xs cursor-nesw-resize z-10"
               onMouseDown={(e) => handleMouseDown(e, "top-right")}
               aria-hidden="true"
             />
             <div
-              className="resize-handle resize-handle-top-left"
+              className="resize-handle resize-handle-top-left absolute -top-1 -left-1 w-2.5 h-2.5 bg-blue-600 border border-white rounded-xs shadow-xs cursor-nwse-resize z-10"
               onMouseDown={(e) => handleMouseDown(e, "top-left")}
               aria-hidden="true"
             />
@@ -231,35 +225,51 @@ const ResizableImageView: React.FC<ResizableImageViewProps> = ({
         )}
 
         {selected && (
-          <div className="alignment-controls" role="group" aria-label="Image alignment">
-              <button
-                onClick={() => handleAlignChange("left")}
-                className={align === "left" ? "is-active" : ""}
-                type="button"
-                aria-label="Align left"
-                aria-pressed={align === "left"}
-              >
-                ←
-              </button>
-              <button
-                onClick={() => handleAlignChange("center")}
-                className={align === "center" ? "is-active" : ""}
-                type="button"
-                aria-label="Align center"
-                aria-pressed={align === "center"}
-              >
-                ⟷
-              </button>
-              <button
-                onClick={() => handleAlignChange("right")}
-                className={align === "right" ? "is-active" : ""}
-                type="button"
-                aria-label="Align right"
-                aria-pressed={align === "right"}
-              >
-                →
-              </button>
-            </div>
+          <div
+            className="alignment-controls absolute -top-8.5 left-0 z-20 flex gap-1 p-1 bg-white border border-zinc-200 rounded-md shadow-md"
+            role="group"
+            aria-label="Image alignment"
+          >
+            <button
+              onClick={() => handleAlignChange("left")}
+              className={`px-2 py-0.5 text-xs font-semibold rounded transition-colors cursor-pointer ${
+                align === "left"
+                  ? "bg-blue-600 text-white is-active"
+                  : "text-blue-600 hover:bg-blue-50"
+              }`}
+              type="button"
+              aria-label="Align left"
+              aria-pressed={align === "left"}
+            >
+              ←
+            </button>
+            <button
+              onClick={() => handleAlignChange("center")}
+              className={`px-2 py-0.5 text-xs font-semibold rounded transition-colors cursor-pointer ${
+                align === "center"
+                  ? "bg-blue-600 text-white is-active"
+                  : "text-blue-600 hover:bg-blue-50"
+              }`}
+              type="button"
+              aria-label="Align center"
+              aria-pressed={align === "center"}
+            >
+              ⟷
+            </button>
+            <button
+              onClick={() => handleAlignChange("right")}
+              className={`px-2 py-0.5 text-xs font-semibold rounded transition-colors cursor-pointer ${
+                align === "right"
+                  ? "bg-blue-600 text-white is-active"
+                  : "text-blue-600 hover:bg-blue-50"
+              }`}
+              type="button"
+              aria-label="Align right"
+              aria-pressed={align === "right"}
+            >
+              →
+            </button>
+          </div>
         )}
       </div>
     </NodeViewWrapper>

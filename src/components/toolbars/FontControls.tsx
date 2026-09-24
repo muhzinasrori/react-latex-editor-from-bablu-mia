@@ -14,9 +14,13 @@ const FontControls = ({ editor, readOnly }: FontControlsProps) => {
     editor?.getAttributes("customTextStyle")?.fontFamily || "";
 
   return (
-    <div className="toolbar-group toolbar-font-controls" role="group" aria-label="Font">
+    <div
+      className="toolbar-group toolbar-font-controls inline-flex items-stretch gap-0 p-[2px] m-0 border border-zinc-300 bg-white rounded-lg shadow-xs flex-nowrap divide-x divide-zinc-200"
+      role="group"
+      aria-label="Font"
+    >
       <select
-        className="toolbar-select toolbar-select-font"
+        className="toolbar-select toolbar-select-font h-8 min-h-[32px] max-h-[32px] w-[118px] pl-2.5 pr-7 py-0 text-[13px] font-medium text-zinc-700 bg-transparent border border-transparent rounded-l-[5px] cursor-pointer appearance-none outline-none transition-colors hover:bg-zinc-100 hover:border-zinc-300 focus:bg-white focus:border-teal-700 disabled:opacity-40 disabled:cursor-not-allowed"
         aria-label="Font family"
         disabled={!editor || readOnly}
         value={currentFontFamily}
@@ -30,7 +34,7 @@ const FontControls = ({ editor, readOnly }: FontControlsProps) => {
       </select>
 
       <select
-        className="toolbar-select toolbar-select-size"
+        className="toolbar-select toolbar-select-size h-8 min-h-[32px] max-h-[32px] w-[68px] pl-2 pr-6 py-0 text-[13px] font-medium text-zinc-700 bg-transparent border border-transparent rounded-r-[5px] cursor-pointer appearance-none outline-none transition-colors hover:bg-zinc-100 hover:border-zinc-300 focus:bg-white focus:border-teal-700 disabled:opacity-40 disabled:cursor-not-allowed"
         aria-label="Font size"
         disabled={!editor || readOnly}
         value={currentFontSize}

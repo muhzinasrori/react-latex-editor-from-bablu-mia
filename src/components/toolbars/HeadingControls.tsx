@@ -19,9 +19,13 @@ const HeadingControls = ({ editor, readOnly }: HeadingControlsProps) => {
   const value = getCurrentHeading(editor);
 
   return (
-    <div className="toolbar-group" role="group" aria-label="Block style">
+    <div
+      className="toolbar-group inline-flex items-stretch gap-0 p-[2px] m-0 border border-zinc-300 bg-white rounded-lg shadow-xs flex-nowrap"
+      role="group"
+      aria-label="Block style"
+    >
       <select
-        className="toolbar-select toolbar-select-heading"
+        className="toolbar-select toolbar-select-heading h-8 min-h-[32px] max-h-[32px] w-28 pl-2.5 pr-7 py-0 text-[13px] font-medium text-zinc-700 bg-transparent border border-transparent rounded-[5px] cursor-pointer appearance-none outline-none transition-colors hover:bg-zinc-100 hover:border-zinc-300 focus:bg-white focus:border-teal-700 disabled:opacity-40 disabled:cursor-not-allowed"
         aria-label="Text style"
         disabled={!editor || readOnly}
         value={value}
