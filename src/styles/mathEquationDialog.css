@@ -288,11 +288,26 @@
   border-radius: 999px;
 }
 
+:root {
+  --keyboard-zindex: 2147483005 !important;
+}
+
+math-virtual-keyboard,
+.ML__keyboard {
+  z-index: 2147483005 !important;
+}
+
 @media (max-width: 640px) {
+  .math-dialog-overlay {
+    align-items: flex-start;
+    padding: 0.5rem;
+    padding-bottom: 22rem;
+  }
+
   .math-dialog {
-    width: calc(100vw - 1rem);
-    max-width: calc(100vw - 1rem);
-    max-height: 94vh;
+    width: 100%;
+    max-width: 100%;
+    max-height: calc(100vh - 1rem);
   }
 
   .math-toolbar-tabs {
@@ -301,7 +316,7 @@
   }
 
   .math-examples {
-    max-height: 130px;
+    max-height: 110px;
   }
 
   .math-display-mode-toggle {
@@ -310,3 +325,4 @@
     gap: 6px;
   }
 }
+

@@ -90,12 +90,53 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
       setLatex(e.target.value);
     }, []);
 
+    const handleClose = useCallback(() => {
+      if (typeof window !== "undefined") {
+        try {
+          (window as any).mathVirtualKeyboard?.hide();
+        } catch (_) {}
+      }
+      onClose();
+    }, [onClose]);
+
+    const showVirtualKeyboard = useCallback(() => {
+      if (typeof window !== "undefined") {
+        const mvk = (window as any).mathVirtualKeyboard;
+        if (mvk) {
+          try {
+            mvk.show();
+          } catch (_) {}
+        }
+      }
+    }, []);
+
+    const toggleVirtualKeyboard = useCallback(() => {
+      if (typeof window !== "undefined") {
+        const mvk = (window as any).mathVirtualKeyboard;
+        if (mvk) {
+          try {
+            if (mvk.visible) {
+              mvk.hide();
+            } else {
+              mvk.show();
+              mathFieldRef.current?.focus();
+            }
+          } catch (_) {}
+        }
+      }
+    }, []);
+
     const handleSave = useCallback(() => {
       const value = latexRef.current.trim();
       if (!value) return;
 
       setIsInserting(true);
       try {
+        if (typeof window !== "undefined") {
+          try {
+            (window as any).mathVirtualKeyboard?.hide();
+          } catch (_) {}
+        }
         onInsert(value, displayMode);
         onClose();
       } finally {
@@ -111,17 +152,34 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
       }
     }, []);
 
-    // Focus math field once on mount
+    // Focus math field once on mount and setup mobile virtual keyboard
     useEffect(() => {
+      if (typeof document !== "undefined") {
+        document.documentElement.style.setProperty(
+          "--keyboard-zindex",
+          "2147483005",
+        );
+      }
+
       const id = requestAnimationFrame(() => {
         if (mathFieldRef.current) {
           if (initialValue) {
             mathFieldRef.current.value = initialValue;
           }
+          try {
+            mathFieldRef.current.mathVirtualKeyboardPolicy = "auto";
+          } catch (_) {}
           mathFieldRef.current.focus();
         }
       });
-      return () => cancelAnimationFrame(id);
+      return () => {
+        cancelAnimationFrame(id);
+        if (typeof window !== "undefined") {
+          try {
+            (window as any).mathVirtualKeyboard?.hide();
+          } catch (_) {}
+        }
+      };
     }, [initialValue]);
 
     // Escape to close; Ctrl/Cmd+Enter to insert (Enter alone stays in math field)
@@ -129,7 +187,7 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
       const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === "Escape") {
           e.preventDefault();
-          onClose();
+          handleClose();
           return;
         }
         if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
@@ -140,7 +198,7 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
 
       document.addEventListener("keydown", handleKeyDown);
       return () => document.removeEventListener("keydown", handleKeyDown);
-    }, [onClose, handleSave]);
+    }, [handleClose, handleSave]);
 
     // Trap focus / lock body scroll while open
     useEffect(() => {
@@ -415,7 +473,7 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
       <ModalPortal>
         <div
           className="math-dialog-overlay fixed inset-0 z-[2147483000] flex items-center justify-center p-4 bg-slate-900/55 backdrop-blur-xs overflow-auto"
-          onClick={onClose}
+          onClick={handleClose}
           role="presentation"
         >
           <div
@@ -430,14 +488,37 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
             <h3 id="math-dialog-title" className="text-base font-semibold text-slate-900 m-0">
               Insert Math Equation
             </h3>
-            <button
-              className="close-button flex items-center justify-center w-7 h-7 text-xl leading-none text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 rounded-md transition-colors cursor-pointer"
-              onClick={onClose}
-              type="button"
-              aria-label="Close dialog"
-            >
-              ×
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 active:bg-blue-200 transition-colors cursor-pointer"
+                onClick={toggleVirtualKeyboard}
+                type="button"
+                title="Tampilkan / Sembunyikan Keyboard di HP"
+                aria-label="Toggle virtual keyboard"
+              >
+                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="4" width="20" height="16" rx="2" />
+                  <line x1="6" y1="8" x2="6" y2="8" />
+                  <line x1="10" y1="8" x2="10" y2="8" />
+                  <line x1="14" y1="8" x2="14" y2="8" />
+                  <line x1="18" y1="8" x2="18" y2="8" />
+                  <line x1="6" y1="12" x2="6" y2="12" />
+                  <line x1="10" y1="12" x2="10" y2="12" />
+                  <line x1="14" y1="12" x2="14" y2="12" />
+                  <line x1="18" y1="12" x2="18" y2="12" />
+                  <line x1="7" y1="16" x2="17" y2="16" />
+                </svg>
+                <span>Keyboard</span>
+              </button>
+              <button
+                className="close-button flex items-center justify-center w-7 h-7 text-xl leading-none text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 rounded-md transition-colors cursor-pointer"
+                onClick={handleClose}
+                type="button"
+                aria-label="Close dialog"
+              >
+                ×
+              </button>
+            </div>
           </div>
 
           <div className="math-toolbar-tabs flex flex-wrap gap-1 px-3 py-2 bg-slate-50/70 border-b border-slate-200 shrink-0">
@@ -464,8 +545,12 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
               ref: mathFieldRef,
               value: latex,
               onInput: handleInput,
-              "virtual-keyboard-mode": "manual",
-              className: "math-dialog-math-field block w-full min-h-[52px] p-2.5 text-base bg-white border-2 border-slate-200 rounded-lg focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-all",
+              onClick: showVirtualKeyboard,
+              onFocus: showVirtualKeyboard,
+              "math-virtual-keyboard-policy": "auto",
+              mathVirtualKeyboardPolicy: "auto",
+              "virtual-keyboard-mode": "auto",
+              className: "math-dialog-math-field block w-full min-h-[52px] p-2.5 text-base bg-white border-2 border-slate-200 rounded-lg focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-all cursor-text",
               "math-mode": "latex",
               "smart-mode": "on",
               "smart-fence": "on",
@@ -490,7 +575,7 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
             <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 m-0 mb-2">
               General
             </h4>
-            <div className="equation-buttons flex flex-wrap gap-1.5">
+            <div className="equation-buttons flex flex-wrap items-center gap-1.5">
               <button
                 onClick={() =>
                   insertSymbol("\\space")
@@ -499,6 +584,26 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
                 type="button"
               >
                 Spasi
+              </button>
+              <button
+                onClick={toggleVirtualKeyboard}
+                className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors cursor-pointer"
+                type="button"
+                title="Tampilkan / Sembunyikan Keyboard di HP"
+              >
+                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="4" width="20" height="16" rx="2" />
+                  <line x1="6" y1="8" x2="6" y2="8" />
+                  <line x1="10" y1="8" x2="10" y2="8" />
+                  <line x1="14" y1="8" x2="14" y2="8" />
+                  <line x1="18" y1="8" x2="18" y2="8" />
+                  <line x1="6" y1="12" x2="6" y2="12" />
+                  <line x1="10" y1="12" x2="10" y2="12" />
+                  <line x1="14" y1="12" x2="14" y2="12" />
+                  <line x1="18" y1="12" x2="18" y2="12" />
+                  <line x1="7" y1="16" x2="17" y2="16" />
+                </svg>
+                Keyboard HP
               </button>
             </div>
           </div>
@@ -517,7 +622,7 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
           </div>
 
           <div className="math-dialog-footer flex items-center justify-end gap-2 px-4 py-3 bg-slate-50 border-t border-slate-200 rounded-b-xl shrink-0">
-            <button className="cancel-button px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer" onClick={onClose} type="button">
+            <button className="cancel-button px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer" onClick={handleClose} type="button">
               Cancel
             </button>
             <button

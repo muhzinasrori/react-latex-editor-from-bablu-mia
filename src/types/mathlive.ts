@@ -8,6 +8,7 @@ export interface MathfieldElement extends HTMLElement {
   value: string;
   menuItems: any[];
   virtualKeyboardMode?: string;
+  mathVirtualKeyboardPolicy?: string;
   mathMode?: string;
   smartMode?: boolean;
   smartFence?: boolean;
