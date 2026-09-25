@@ -14,7 +14,7 @@ const EquationControl = ({
 }: EquationControlProps) => {
   return (
     <div
-      className="toolbar-group inline-flex items-stretch gap-0 p-[2px] m-0 border border-zinc-300 bg-white rounded-lg shadow-xs flex-nowrap"
+      className="inline-flex items-center shrink-0"
       role="group"
       aria-label="Equation"
     >

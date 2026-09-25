@@ -7,19 +7,35 @@ interface ToolbarButtonProps {
   children: ReactNode;
   shortcut?: string;
   disabled?: boolean;
+  className?: string;
+  "aria-expanded"?: boolean;
+  "aria-haspopup"?: boolean | "dialog" | "menu" | "listbox" | "tree" | "grid";
 }
 
 const ToolbarButton = memo(
   forwardRef<HTMLButtonElement, ToolbarButtonProps>(
-    ({ onClick, isActive, title, children, shortcut, disabled }, ref) => {
+    (
+      {
+        onClick,
+        isActive,
+        title,
+        children,
+        shortcut,
+        disabled,
+        className = "",
+        "aria-expanded": ariaExpanded,
+        "aria-haspopup": ariaHasPopup,
+      },
+      ref,
+    ) => {
       const label = shortcut ? `${title} (${shortcut})` : title;
 
       const baseClasses =
-        "inline-flex items-center justify-center w-8 h-8 min-w-[2rem] p-0 m-0 border rounded-[5px] transition-colors duration-150 shrink-0 relative cursor-pointer focus-visible:outline-2 focus-visible:outline-teal-700 focus-visible:outline-offset-1 disabled:opacity-35 disabled:cursor-not-allowed disabled:pointer-events-none [&>svg]:w-4 [&>svg]:h-4 [&>svg]:block [&>svg]:pointer-events-none";
+        "inline-flex items-center justify-center w-8 h-8 min-w-[2rem] p-0 m-0 rounded-md transition-colors duration-150 shrink-0 relative cursor-pointer focus-visible:outline-2 focus-visible:outline-blue-600 focus-visible:outline-offset-1 disabled:opacity-30 disabled:cursor-not-allowed disabled:pointer-events-none [&>svg]:w-4 [&>svg]:h-4 [&>svg]:block [&>svg]:pointer-events-none";
 
       const stateClasses = isActive
-        ? "bg-teal-100/80 text-teal-800 border-teal-300 shadow-xs"
-        : "text-zinc-700 hover:text-zinc-900 bg-transparent border-transparent hover:bg-zinc-200/70 hover:border-zinc-300";
+        ? "bg-blue-100 text-blue-700 font-medium shadow-2xs"
+        : "text-slate-600 hover:text-slate-900 bg-transparent hover:bg-slate-100 active:bg-slate-200";
 
       return (
         <button
@@ -27,9 +43,11 @@ const ToolbarButton = memo(
           onClick={onClick}
           className={`toolbar-button ${baseClasses} ${stateClasses} ${
             isActive ? "is-active" : ""
-          } ${disabled ? "is-disabled" : ""}`}
+          } ${disabled ? "is-disabled" : ""} ${className}`.trim()}
           aria-label={label}
           aria-pressed={isActive}
+          aria-expanded={ariaExpanded}
+          aria-haspopup={ariaHasPopup}
           disabled={disabled}
           type="button"
           title={label}

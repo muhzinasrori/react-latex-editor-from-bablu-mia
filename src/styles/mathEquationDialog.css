@@ -301,7 +301,7 @@ math-virtual-keyboard,
   .math-dialog-overlay {
     align-items: flex-start;
     padding: 0.5rem;
-    padding-bottom: 22rem;
+    padding-bottom: 3rem;
   }
 
   .math-dialog {
@@ -316,7 +316,7 @@ math-virtual-keyboard,
   }
 
   .math-examples {
-    max-height: 110px;
+    max-height: 90px;
   }
 
   .math-display-mode-toggle {

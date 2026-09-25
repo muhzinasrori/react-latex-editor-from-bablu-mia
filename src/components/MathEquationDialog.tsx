@@ -82,6 +82,7 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
     const [isInserting, setIsInserting] = useState(false);
     const [displayMode, setDisplayMode] = useState(false);
     const mathFieldRef = useRef<MathfieldElement | null>(null);
+    const textInputRef = useRef<HTMLInputElement | null>(null);
     const dialogRef = useRef<HTMLDivElement>(null);
     const latexRef = useRef(latex);
     latexRef.current = latex;
@@ -89,6 +90,17 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
     const handleInput = useCallback((e: any) => {
       setLatex(e.target.value);
     }, []);
+
+    const handleTextChange = useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = e.target.value;
+        setLatex(val);
+        if (mathFieldRef.current) {
+          mathFieldRef.current.value = val;
+        }
+      },
+      [],
+    );
 
     const handleClose = useCallback(() => {
       if (typeof window !== "undefined") {
@@ -227,6 +239,8 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
           { symbol: "\\geq", title: "Greater or Equal", display: "≥" },
           { symbol: "\\ll", title: "Much Less", display: "≪" },
           { symbol: "\\gg", title: "Much Greater", display: "≫" },
+          { symbol: "\\frac{a}{b}", title: "Fraction", display: "a/b" },
+          { symbol: "#@^2", title: "Square", display: "x²" },
         ],
         fractions: [
           { symbol: "\\frac{a}{b}", title: "Fraction", display: "a/b" },
@@ -245,14 +259,14 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
         powers: [
           { symbol: "#@^2", title: "Square", display: "x²" },
           { symbol: "#@^3", title: "Cube", display: "x³" },
-          { symbol: "#@^{}", title: "Power", display: "xⁿ" },
-          { symbol: "#@_{}", title: "Subscript", display: "x₁" },
-          { symbol: "#@_{}^{}", title: "Sub-Superscript", display: "xₙᵐ" },
-          { symbol: "\\sqrt{}", title: "Square Root", display: "√" },
-          { symbol: "\\sqrt[3]{}", title: "Cube Root", display: "∛" },
-          { symbol: "\\sqrt[n]{}", title: "Nth Root", display: "ⁿ√" },
-          { symbol: "e^{}", title: "Exponential", display: "eˣ" },
-          { symbol: "10^{}", title: "Power of 10", display: "10ˣ" },
+          { symbol: "#@^{n}", title: "Power", display: "xⁿ" },
+          { symbol: "#@_{1}", title: "Subscript", display: "x₁" },
+          { symbol: "#@_{x}^{n}", title: "Sub-Superscript", display: "xₙᵐ" },
+          { symbol: "\\sqrt{x}", title: "Square Root", display: "√x" },
+          { symbol: "\\sqrt[3]{x}", title: "Cube Root", display: "∛x" },
+          { symbol: "\\sqrt[n]{x}", title: "Nth Root", display: "ⁿ√x" },
+          { symbol: "e^{x}", title: "Exponential", display: "eˣ" },
+          { symbol: "10^{x}", title: "Power of 10", display: "10ˣ" },
           { symbol: "#@^{-1}", title: "Reciprocal", display: "x⁻¹" },
         ],
         trig: [
@@ -271,7 +285,7 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
         ],
         logs: [
           { symbol: "\\log", title: "Logarithm", display: "log" },
-          { symbol: "\\log_{}", title: "Log Base", display: "log₍ₓ₎" },
+          { symbol: "\\log_{x}", title: "Log Base", display: "log₍ₓ₎" },
           { symbol: "\\log_{10}", title: "Log Base 10", display: "log₁₀" },
           { symbol: "\\log_2", title: "Log Base 2", display: "log₂" },
           { symbol: "\\ln", title: "Natural Log", display: "ln" },
@@ -521,26 +535,16 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
             </div>
           </div>
 
-          <div className="math-toolbar-tabs flex flex-wrap gap-1 px-3 py-2 bg-slate-50/70 border-b border-slate-200 shrink-0">
-            {(Object.keys(toolbarSections) as Array<keyof TabSections>).map(
-              (tab) => (
-                <button
-                  key={tab}
-                  className={`tab-button px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer ${
-                    activeTab === tab
-                      ? "active bg-blue-600 text-white hover:bg-blue-700"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/70"
-                  }`}
-                  onClick={() => setActiveTab(tab)}
-                  type="button"
-                >
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                </button>
-              ),
-            )}
-          </div>
-
           <div className="math-editor p-3.5 border-b border-slate-200 shrink-0">
+            <div className="flex items-center justify-between mb-1.5">
+              <button
+                type="button"
+                onClick={() => textInputRef.current?.focus()}
+                className="text-xs text-blue-600 hover:text-blue-800 font-medium sm:hidden cursor-pointer"
+              >
+                Ketik via Keyboard HP ↓
+              </button>
+            </div>
             {React.createElement("math-field", {
               ref: mathFieldRef,
               value: latex,
@@ -565,6 +569,60 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
               "smart-space": "on",
               "smart-command": "on",
             })}
+          </div>
+
+          {/* Input Teks Langsung (100% Munculkan Keyboard Bawaan di HP) */}
+          <div className="p-3 bg-blue-50/50 border-b border-slate-200 shrink-0">
+            <div className="flex items-center justify-between mb-1.5">
+              <label htmlFor="hp-latex-input" className="text-xs font-semibold text-blue-800 flex items-center gap-1.5">
+                <svg className="w-4 h-4 text-blue-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="4" width="20" height="16" rx="2" />
+                  <line x1="6" y1="8" x2="6" y2="8" />
+                  <line x1="10" y1="8" x2="10" y2="8" />
+                  <line x1="14" y1="8" x2="14" y2="8" />
+                  <line x1="18" y1="8" x2="18" y2="8" />
+                  <line x1="6" y1="12" x2="6" y2="12" />
+                  <line x1="10" y1="12" x2="10" y2="12" />
+                  <line x1="14" y1="12" x2="14" y2="12" />
+                  <line x1="18" y1="12" x2="18" y2="12" />
+                  <line x1="7" y1="16" x2="17" y2="16" />
+                </svg>
+                <span>Input Teks Rumus (Keyboard HP)</span>
+              </label>
+              <span className="text-[11px] text-blue-600 font-medium">Ketuk untuk buka keyboard HP</span>
+            </div>
+            <input
+              ref={textInputRef}
+              id="hp-latex-input"
+              type="text"
+              value={latex}
+              onChange={handleTextChange}
+              placeholder="Ketuk di sini untuk mengetik dengan keyboard HP (contoh: x^2 + 5)"
+              className="w-full px-3 py-2 text-sm font-mono text-slate-800 bg-white border border-blue-200 rounded-lg focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-all shadow-2xs"
+              autoCapitalize="none"
+              autoCorrect="off"
+              autoComplete="off"
+              spellCheck="false"
+            />
+          </div>
+
+          <div className="math-toolbar-tabs flex flex-wrap gap-1 px-3 py-2 bg-slate-50/70 border-b border-slate-200 shrink-0">
+            {(Object.keys(toolbarSections) as Array<keyof TabSections>).map(
+              (tab) => (
+                <button
+                  key={tab}
+                  className={`tab-button px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer ${
+                    activeTab === tab
+                      ? "active bg-blue-600 text-white hover:bg-blue-700"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/70"
+                  }`}
+                  onClick={() => setActiveTab(tab)}
+                  type="button"
+                >
+                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                </button>
+              ),
+            )}
           </div>
 
           <div className="math-toolbar-container p-2.5 border-b border-slate-200 max-h-[140px] overflow-y-auto shrink-0">
