@@ -25,6 +25,7 @@ export interface MathfieldElement extends HTMLElement {
   menuToggle?: string;
   menuToggleVisible?: boolean;
   fontsDirectory?: string | null;
+  executeCommand(command: any): boolean;
   [key: string]: any;
 }
 

@@ -72,7 +72,8 @@ type TabSections = {
     | "calculus"
     | "symbols"
     | "geometry"
-    | "brackets"]: SymbolItem[];
+    | "brackets"
+    | "matrix"]: SymbolItem[];
 };
 
 const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
@@ -164,7 +165,7 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
       }
     }, []);
 
-    // Focus math field once on mount and setup mobile virtual keyboard
+    // Focus math field once on mount, setup mobile virtual keyboard, translate menu & fix mobile touch bug
     useEffect(() => {
       if (typeof document !== "undefined") {
         document.documentElement.style.setProperty(
@@ -181,11 +182,167 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
           try {
             mathFieldRef.current.mathVirtualKeyboardPolicy = "auto";
           } catch (_) {}
+
+          // Terjemahkan isi menu garis tiga (context menu) ke Bahasa Indonesia
+          const translateMenuItems = (items: readonly any[]): any[] => {
+            if (!items || !Array.isArray(items)) return [];
+            return items.map((item) => {
+              let label = item.label;
+              if (typeof label === "string") {
+                const lower = label.toLowerCase();
+                if (lower === "insert matrix" || lower.includes("insert matrix")) {
+                  label = label.replace(/insert matrix/i, "Sisipkan Matriks");
+                } else if (lower === "matrix") {
+                  label = "Matriks";
+                } else if (lower === "cut") {
+                  label = "Potong (Cut)";
+                } else if (lower === "copy") {
+                  label = "Salin (Copy)";
+                } else if (lower === "paste") {
+                  label = "Tempel (Paste)";
+                } else if (lower === "select all") {
+                  label = "Pilih Semua";
+                } else if (lower === "undo") {
+                  label = "Urungkan (Undo)";
+                } else if (lower === "redo") {
+                  label = "Ulangi (Redo)";
+                }
+              }
+              const newItem = { ...item, label };
+              if (item.submenu && Array.isArray(item.submenu)) {
+                newItem.submenu = translateMenuItems(item.submenu);
+              }
+              return newItem;
+            });
+          };
+
+          try {
+            if (mathFieldRef.current.menuItems) {
+              mathFieldRef.current.menuItems = translateMenuItems(
+                mathFieldRef.current.menuItems,
+              );
+            }
+          } catch (_) {}
+
           mathFieldRef.current.focus();
         }
       });
+
+      // Fix MathLive's hamburger menu toggle bug on mobile / touch devices:
+      // Di HP, MathLive membuka menu pada pointerdown dan langsung menutupnya pada pointerup (saat jari diangkat).
+      // Kita cegah trigger prematur di pointerdown dan trigger toggleContextMenu saat sentuhan dilepas (touchend/pointerup).
+      const mf = mathFieldRef.current;
+      let cleanupTouchListeners: (() => void) | undefined;
+
+      if (mf) {
+        const isMenuToggle = (el: any): boolean => {
+          if (!el) return false;
+          if (typeof el.getAttribute === "function") {
+            const part = el.getAttribute("part") || "";
+            if (part.includes("menu-toggle")) return true;
+          }
+          if (
+            el.classList &&
+            (el.classList.contains("ML__menu-toggle") ||
+              el.classList.contains("ui-menu-toggle"))
+          ) {
+            return true;
+          }
+          if (
+            el.closest &&
+            el.closest('[part*="menu-toggle"], .ML__menu-toggle')
+          ) {
+            return true;
+          }
+          return false;
+        };
+
+        const isToggleEvent = (e: Event): boolean => {
+          const path = e.composedPath ? e.composedPath() : [];
+          return path.some((target) => isMenuToggle(target));
+        };
+
+        let lastToggleTime = 0;
+        const triggerToggle = (e: Event) => {
+          const now = Date.now();
+          if (now - lastToggleTime < 350) return;
+          lastToggleTime = now;
+
+          e.preventDefault();
+          e.stopPropagation();
+
+          try {
+            mf.executeCommand?.("toggleContextMenu");
+          } catch (_) {}
+        };
+
+        const handlePointerDown = (e: PointerEvent) => {
+          if (e.pointerType === "touch" && isToggleEvent(e)) {
+            e.stopPropagation();
+          }
+        };
+
+        const handleTouchStart = (e: TouchEvent) => {
+          if (isToggleEvent(e)) {
+            e.stopPropagation();
+          }
+        };
+
+        const handlePointerUp = (e: PointerEvent) => {
+          if (e.pointerType === "touch" && isToggleEvent(e)) {
+            triggerToggle(e);
+          }
+        };
+
+        const handleTouchEnd = (e: TouchEvent) => {
+          if (isToggleEvent(e)) {
+            triggerToggle(e);
+          }
+        };
+
+        mf.addEventListener("pointerdown", handlePointerDown, { capture: true });
+        mf.addEventListener("touchstart", handleTouchStart, { capture: true });
+        mf.addEventListener("pointerup", handlePointerUp, { capture: true });
+        mf.addEventListener("touchend", handleTouchEnd, { capture: true });
+
+        // Pasang juga langsung ke elemen toggle di shadowRoot
+        const attachShadow = () => {
+          const shadow = mf.shadowRoot;
+          if (!shadow) return;
+          const toggleBtn = shadow.querySelector(
+            '[part*="menu-toggle"], .ML__menu-toggle'
+          ) as HTMLElement | null;
+          if (toggleBtn) {
+            const onShadowDown = (e: Event) => {
+              if (
+                (e as PointerEvent).pointerType === "touch" ||
+                e.type === "touchstart"
+              ) {
+                e.stopPropagation();
+              }
+            };
+            toggleBtn.addEventListener("pointerdown", onShadowDown, { capture: true });
+            toggleBtn.addEventListener("touchstart", onShadowDown, { capture: true });
+            toggleBtn.addEventListener("pointerup", triggerToggle, { capture: true });
+            toggleBtn.addEventListener("touchend", triggerToggle, { capture: true });
+          }
+        };
+
+        attachShadow();
+        const shadowTimer = setTimeout(attachShadow, 150);
+
+        cleanupTouchListeners = () => {
+          clearTimeout(shadowTimer);
+          mf.removeEventListener("pointerdown", handlePointerDown, { capture: true });
+          mf.removeEventListener("touchstart", handleTouchStart, { capture: true });
+          mf.removeEventListener("pointerup", handlePointerUp, { capture: true });
+          mf.removeEventListener("touchend", handleTouchEnd, { capture: true });
+        };
+      }
+
       return () => {
         cancelAnimationFrame(id);
+        cleanupTouchListeners?.();
         if (typeof window !== "undefined") {
           try {
             (window as any).mathVirtualKeyboard?.hide();
@@ -241,6 +398,9 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
           { symbol: "\\gg", title: "Much Greater", display: "≫" },
           { symbol: "\\frac{a}{b}", title: "Fraction", display: "a/b" },
           { symbol: "#@^2", title: "Square", display: "x²" },
+          { symbol: "#@^{n}", title: "Power", display: "xⁿ" },
+          { symbol: "\\sqrt{x}", title: "Square Root", display: "√x" },
+          { symbol: "\\sqrt[3]{x}", title: "Cube Root", display: "∛x" },
         ],
         fractions: [
           { symbol: "\\frac{a}{b}", title: "Fraction", display: "a/b" },
@@ -460,6 +620,73 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
             display: "⌊ ⌋",
           },
         ],
+        matrix: [
+          {
+            symbol: "\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}",
+            title: "Matriks Kurung Biasa 2×2 (pmatrix)",
+            display: "(2×2)",
+          },
+          {
+            symbol: "\\begin{pmatrix} a & b & c \\\\ d & e & f \\\\ g & h & i \\end{pmatrix}",
+            title: "Matriks Kurung Biasa 3×3 (pmatrix)",
+            display: "(3×3)",
+          },
+          {
+            symbol: "\\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix}",
+            title: "Matriks Kurung Siku 2×2 (bmatrix)",
+            display: "[2×2]",
+          },
+          {
+            symbol: "\\begin{bmatrix} a & b & c \\\\ d & e & f \\\\ g & h & i \\end{bmatrix}",
+            title: "Matriks Kurung Siku 3×3 (bmatrix)",
+            display: "[3×3]",
+          },
+          {
+            symbol: "\\begin{vmatrix} a & b \\\\ c & d \\end{vmatrix}",
+            title: "Determinan 2×2 (vmatrix)",
+            display: "|2×2|",
+          },
+          {
+            symbol: "\\begin{vmatrix} a & b & c \\\\ d & e & f \\\\ g & h & i \\end{vmatrix}",
+            title: "Determinan 3×3 (vmatrix)",
+            display: "|3×3|",
+          },
+          {
+            symbol: "\\begin{Bmatrix} a & b \\\\ c & d \\end{Bmatrix}",
+            title: "Matriks Kurung Kurawal 2×2 (Bmatrix)",
+            display: "{2×2}",
+          },
+          {
+            symbol: "\\begin{matrix} a & b \\\\ c & d \\end{matrix}",
+            title: "Matriks Polos Tanpa Kurung",
+            display: "2×2",
+          },
+          {
+            symbol: "\\begin{pmatrix} x \\\\ y \\end{pmatrix}",
+            title: "Vektor / Matriks Kolom 2×1",
+            display: "2×1",
+          },
+          {
+            symbol: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix}",
+            title: "Vektor / Matriks Kolom 3×1",
+            display: "3×1",
+          },
+          {
+            symbol: "\\begin{pmatrix} x & y & z \\end{pmatrix}",
+            title: "Matriks Baris 1×3",
+            display: "1×3",
+          },
+          {
+            symbol: " & ",
+            title: "Tambah Kolom (&)",
+            display: "+Col",
+          },
+          {
+            symbol: " \\\\ ",
+            title: "Tambah Baris (\\\\)",
+            display: "+Row",
+          },
+        ],
       }),
       [],
     );
@@ -486,12 +713,12 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
     return (
       <ModalPortal>
         <div
-          className="math-dialog-overlay fixed inset-0 z-[2147483000] flex items-center justify-center p-4 bg-slate-900/55 backdrop-blur-xs overflow-auto"
+          className="math-dialog-overlay fixed inset-0 z-[2147483000] flex items-center justify-center p-2 sm:p-4 bg-slate-900/55 backdrop-blur-xs overflow-hidden"
           onClick={handleClose}
           role="presentation"
         >
           <div
-            className="math-dialog relative flex flex-col w-full max-w-[700px] max-h-[90vh] bg-white rounded-xl shadow-2xl overflow-hidden border border-slate-200 font-sans text-slate-900"
+            className="math-dialog relative flex flex-col w-full max-w-[700px] h-[92vh] sm:h-auto sm:max-h-[90vh] bg-white rounded-xl shadow-2xl overflow-hidden border border-slate-200 font-sans text-slate-900"
             ref={dialogRef}
             onClick={(e) => e.stopPropagation()}
             role="dialog"
@@ -504,25 +731,22 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
             </h3>
             <div className="flex items-center gap-2">
               <button
-                className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 active:bg-blue-200 transition-colors cursor-pointer"
-                onClick={toggleVirtualKeyboard}
+                className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-md hover:bg-slate-100 active:bg-slate-200 transition-colors cursor-pointer shadow-2xs"
+                onClick={() => {
+                  try {
+                    mathFieldRef.current?.executeCommand?.("toggleContextMenu");
+                  } catch (_) {}
+                }}
                 type="button"
-                title="Tampilkan / Sembunyikan Keyboard di HP"
-                aria-label="Toggle virtual keyboard"
+                title="Buka menu opsi / matriks"
+                aria-label="Toggle menu"
               >
                 <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="2" y="4" width="20" height="16" rx="2" />
-                  <line x1="6" y1="8" x2="6" y2="8" />
-                  <line x1="10" y1="8" x2="10" y2="8" />
-                  <line x1="14" y1="8" x2="14" y2="8" />
-                  <line x1="18" y1="8" x2="18" y2="8" />
-                  <line x1="6" y1="12" x2="6" y2="12" />
-                  <line x1="10" y1="12" x2="10" y2="12" />
-                  <line x1="14" y1="12" x2="14" y2="12" />
-                  <line x1="18" y1="12" x2="18" y2="12" />
-                  <line x1="7" y1="16" x2="17" y2="16" />
+                  <line x1="4" y1="6" x2="20" y2="6" />
+                  <line x1="4" y1="12" x2="20" y2="12" />
+                  <line x1="4" y1="18" x2="20" y2="18" />
                 </svg>
-                <span>Keyboard</span>
+                <span>Menu</span>
               </button>
               <button
                 className="close-button flex items-center justify-center w-7 h-7 text-xl leading-none text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 rounded-md transition-colors cursor-pointer"
@@ -535,7 +759,9 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
             </div>
           </div>
 
-          <div className="math-editor p-3.5 border-b border-slate-200 shrink-0">
+          {/* Area Konten Scrollable: Hanya bagian ini yang terkena scroll */}
+          <div className="math-dialog-body flex-1 overflow-y-auto min-h-0 flex flex-col">
+            <div className="math-editor p-3.5 border-b border-slate-200 shrink-0">
             <div className="flex items-center justify-between mb-1.5">
               <button
                 type="button"
@@ -606,7 +832,7 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
             />
           </div>
 
-          <div className="math-toolbar-tabs flex flex-wrap gap-1 px-3 py-2 bg-slate-50/70 border-b border-slate-200 shrink-0">
+          <div className="math-toolbar-tabs sticky top-0 z-10 flex flex-wrap gap-1 px-3 py-2 bg-slate-50/95 backdrop-blur-xs border-b border-slate-200 shrink-0">
             {(Object.keys(toolbarSections) as Array<keyof TabSections>).map(
               (tab) => (
                 <button
@@ -629,14 +855,14 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
             {renderToolbar(toolbarSections[activeTab])}
           </div>
 
-          <div className="math-examples p-2.5 border-b border-slate-200 max-h-[140px] overflow-y-auto shrink-0">
+          <div className="math-examples border-b border-slate-200 max-h-[140px] overflow-y-auto shrink-0">
             <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 m-0 mb-2">
               General
             </h4>
             <div className="equation-buttons flex flex-wrap items-center gap-1.5">
               <button
                 onClick={() =>
-                  insertSymbol("\\space")
+                insertSymbol("\\space")
                 }
                 className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
                 type="button"
@@ -663,6 +889,250 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
                 </svg>
                 Keyboard HP
               </button>
+              <button
+                onClick={() => insertSymbol("x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Quadratic Formula
+              </button>
+              <button
+                onClick={() => insertSymbol("a^2 + b^2 = c^2")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Pythagorean Theorem
+              </button>
+              <button
+                onClick={() => insertSymbol("A = \\pi r^2")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Area of Circle
+              </button>
+              <button
+                onClick={() => insertSymbol("C = 2 \\pi r")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Circumference
+              </button>
+            </div>
+          </div>
+
+          <div className="math-examples border-b border-slate-200 max-h-[140px] overflow-y-auto shrink-0">
+            <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 m-0 mb-2">
+            Higher Math
+            </h4>
+            <div className="equation-buttons flex flex-wrap items-center gap-1.5">
+              <button
+                onClick={() => insertSymbol("\\frac{dy}{dx}")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Derivative
+              </button>
+              <button
+                onClick={() => insertSymbol("e^{i\\pi} + 1 = 0")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Euler's Identity
+              </button>
+              <button
+                onClick={() =>
+                insertSymbol(
+                  "f'(x) = \\lim_{h \\to 0} \\frac{f(x+h) - f(x)}{h}",
+                )
+                }
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Limit Definition of Derivative
+              </button>
+              <button
+                onClick={() =>
+                insertSymbol(
+                  "\\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}",
+                )
+                }
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Gaussian Integral
+              </button>
+            </div>
+          </div>
+
+          <div className="math-examples border-b border-slate-200 max-h-[140px] overflow-y-auto shrink-0">
+            <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 m-0 mb-2">
+            Physics
+            </h4>
+            <div className="equation-buttons flex flex-wrap items-center gap-1.5">
+              <button
+                onClick={() => insertSymbol("F = ma")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Newton's 2nd Law
+              </button>
+              <button
+                onClick={() => insertSymbol("E = mc^2")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                E=mc²
+              </button>
+              <button
+                onClick={() => insertSymbol("KE = \\frac{1}{2} mv^2")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Kinetic Energy
+              </button>
+              <button
+                onClick={() => insertSymbol("V = IR")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Ohm's Law
+              </button>
+              <button
+                onClick={() =>
+                insertSymbol("\\Delta x \\Delta p \\geq \\frac{\\hbar}{2}")
+                }
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Uncertainty Principle
+              </button>
+              <button
+                onClick={() =>
+                insertSymbol(
+                  "\\nabla \\cdot \\vec{E} = \\frac{\\rho}{\\epsilon_0}",
+                )
+                }
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Gauss's Law
+              </button>
+            </div>
+          </div>
+
+          <div className="math-examples border-b border-slate-200 max-h-[140px] overflow-y-auto shrink-0">
+            <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 m-0 mb-2">
+            Chemistry
+            </h4>
+            <div className="equation-buttons flex flex-wrap items-center gap-1.5">
+              <button
+                onClick={() => insertSymbol("H_2O")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Water Formula
+              </button>
+              <button
+                onClick={() => insertSymbol("n = \\frac{m}{M}")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Molar Mass
+              </button>
+              <button
+                onClick={() => insertSymbol("PV = nRT")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Ideal Gas Law
+              </button>
+              <button
+                onClick={() => insertSymbol("2H_2 + O_2 \\to 2H_2O")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Chemical Reaction
+              </button>
+              <button
+                onClick={() => insertSymbol("K_a = \\frac{[H^+][A^-]}{[HA]}")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Acid Constant
+              </button>
+            </div>
+          </div>
+
+          <div className="math-examples border-b border-slate-200 max-h-[140px] overflow-y-auto shrink-0">
+            <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 m-0 mb-2">
+            Geometry
+            </h4>
+            <div className="equation-buttons flex flex-wrap items-center gap-1.5">
+              <button
+                onClick={() => insertSymbol("\\angle ABC = 90^\\circ")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Right Angle
+              </button>
+              <button
+                onClick={() => insertSymbol("\\angle ABC = 180^\\circ")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Straight Angle
+              </button>
+              <button
+                onClick={() => insertSymbol("A = \\frac{1}{2}bh")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Triangle Area
+              </button>
+              <button
+                onClick={() => insertSymbol("A = s^2")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Square Area
+              </button>
+              <button
+                onClick={() => insertSymbol("A = lw")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Rectangle Area
+              </button>
+              <button
+                onClick={() => insertSymbol("V = \\frac{4}{3}\\pi r^3")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Sphere Volume
+              </button>
+              <button
+                onClick={() =>
+                insertSymbol("\\triangle ABC \\cong \\triangle DEF")
+                }
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Congruent Triangles
+              </button>
+              <button
+                onClick={() => insertSymbol("AB \\parallel CD")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Parallel Lines
+              </button>
+              <button
+                onClick={() => insertSymbol("AB \\perp CD")}
+                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                type="button"
+              >
+                Perpendicular Lines
+              </button>
             </div>
           </div>
 
@@ -678,12 +1148,14 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
             </label>
             <span className="math-dialog-hint text-[11px] text-slate-400">Tip: Ctrl/Cmd + Enter to insert</span>
           </div>
+        </div>
 
-          <div className="math-dialog-footer flex items-center justify-end gap-2 px-4 py-3 bg-slate-50 border-t border-slate-200 rounded-b-xl shrink-0">
+        {/* Footer: Tetap Fixed di Bawah Dialog */}
+        <div className="math-dialog-footer sticky bottom-0 z-10 flex items-center justify-end gap-2 px-4 py-3 bg-slate-50 border-t border-slate-200 rounded-b-xl shrink-0 shadow-xs">
             <button className="cancel-button px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer" onClick={handleClose} type="button">
               Cancel
             </button>
-            <button
+            <button                   
               className="save-button px-4 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-xs"
               onClick={handleSave}
               type="button"

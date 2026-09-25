@@ -24,17 +24,25 @@
 
 .math-dialog {
   background: #fff;
-  border-radius: 10px;
+  border-radius: 12px;
   box-shadow: 0 24px 48px rgba(15, 23, 42, 0.2);
   width: min(700px, calc(100vw - 2rem));
   max-width: min(700px, calc(100vw - 2rem));
-  max-height: min(90vh, 920px);
+  height: min(92vh, 880px);
+  max-height: min(92vh, 880px);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   position: relative;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   color: #0f172a;
+}
+
+.math-dialog-body {
+  flex: 1 1 0%;
+  overflow-y: auto;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
 }
 
 .math-dialog-header {
@@ -297,17 +305,32 @@ math-virtual-keyboard,
   z-index: 2147483005 !important;
 }
 
+.ML__popover,
+.ui-menu,
+math-field-popover,
+[part*="menu"] {
+  z-index: 2147483010 !important;
+}
+
 @media (max-width: 640px) {
   .math-dialog-overlay {
-    align-items: flex-start;
+    align-items: center;
     padding: 0.5rem;
-    padding-bottom: 3rem;
+    overflow: hidden;
   }
 
   .math-dialog {
     width: 100%;
     max-width: 100%;
+    height: calc(100vh - 1rem);
     max-height: calc(100vh - 1rem);
+    border-radius: 12px;
+  }
+
+  .math-dialog-body {
+    flex: 1 1 0%;
+    overflow-y: auto;
+    min-height: 0;
   }
 
   .math-toolbar-tabs {
@@ -315,8 +338,9 @@ math-virtual-keyboard,
     overflow-x: auto;
   }
 
-  .math-examples {
-    max-height: 90px;
+  .math-dialog-footer {
+    border-top: 1px solid #e2e8f0;
+    box-shadow: 0 -4px 12px rgba(15, 23, 42, 0.05);
   }
 
   .math-display-mode-toggle {

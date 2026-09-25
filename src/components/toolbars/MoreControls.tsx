@@ -37,8 +37,80 @@ const MoreControls = ({ editor, readOnly, onImagePicker }: MoreControlsProps) =>
   const [showSvgDialog, setShowSvgDialog] = useState(false);
   const [svgMarkup, setSvgMarkup] = useState("");
   const [svgError, setSvgError] = useState<string | null>(null);
+  const [coords, setCoords] = useState<{
+    top: number;
+    left: number;
+    width: number;
+    maxHeight: number;
+  }>({ top: 0, left: 0, width: 340, maxHeight: 400 });
 
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const updateCoords = useCallback(() => {
+    const el = buttonRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    // If button is scrolled out of viewport, close dropdown
+    if (rect.bottom < 0 || rect.top > viewportHeight) {
+      setIsOpen(false);
+      return;
+    }
+
+    const padding = 8;
+    const menuWidth = Math.min(340, viewportWidth - padding * 2);
+
+    // Align right edge of menu with right edge of button, clamped within viewport
+    let left = rect.right - menuWidth;
+    if (left < padding) left = padding;
+    if (left + menuWidth > viewportWidth - padding) {
+      left = viewportWidth - padding - menuWidth;
+    }
+
+    const spaceBelow = viewportHeight - rect.bottom - padding;
+    const spaceAbove = rect.top - padding;
+
+    let top = rect.bottom + 6;
+    let maxHeight = Math.max(160, Math.min(480, spaceBelow));
+
+    // If space below is limited (< 200px) and there's more room above, flip above the button
+    if (spaceBelow < 200 && spaceAbove > spaceBelow) {
+      const height = Math.min(480, spaceAbove);
+      top = Math.max(padding, rect.top - 6 - height);
+      maxHeight = height;
+    }
+
+    setCoords({ top, left, width: menuWidth, maxHeight });
+  }, []);
+
+  const toggleOpen = useCallback(() => {
+    setIsOpen((prev) => {
+      if (!prev) {
+        updateCoords();
+        return true;
+      }
+      return false;
+    });
+  }, [updateCoords]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    updateCoords();
+
+    const handleResize = () => updateCoords();
+    const handleScroll = () => updateCoords();
+
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("scroll", handleScroll, true);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("scroll", handleScroll, true);
+    };
+  }, [isOpen, updateCoords]);
 
   useEffect(() => {
     const handleKeyDown = (event: globalThis.KeyboardEvent) => {
@@ -91,9 +163,10 @@ const MoreControls = ({ editor, readOnly, onImagePicker }: MoreControlsProps) =>
   );
 
   return (
-    <div className="inline-flex items-center shrink-0" ref={dropdownRef}>
+    <div className="inline-flex items-center shrink-0">
       <ToolbarButton
-        onClick={() => setIsOpen((prev) => !prev)}
+        ref={buttonRef}
+        onClick={toggleOpen}
         isActive={isOpen}
         title="More options (Menu titik tiga)"
         aria-expanded={isOpen}
@@ -112,16 +185,22 @@ const MoreControls = ({ editor, readOnly, onImagePicker }: MoreControlsProps) =>
 
       {isOpen && (
         <ModalPortal>
-          {/* Backdrop for mobile & desktop */}
+          {/* Subtle backdrop to handle click-outside */}
           <div
-            className="fixed inset-0 z-[2147482990] bg-slate-900/40 backdrop-blur-2xs transition-opacity duration-150 animate-in fade-in"
+            className="fixed inset-0 z-[2147482990] bg-slate-900/10 transition-opacity duration-150 animate-in fade-in"
             onClick={() => setIsOpen(false)}
             aria-hidden="true"
           />
 
-          {/* Dialog Container: Bottom Sheet on Mobile (< sm), Fixed Card on Desktop */}
+          {/* Floating popover dropdown anchored directly below the MoreControls button */}
           <div
-            className="fixed z-[2147483000] inset-x-2 bottom-2 sm:inset-auto sm:top-14 sm:right-6 sm:max-w-sm max-h-[85vh] sm:max-h-[80vh] bg-white border border-slate-200 rounded-2xl sm:rounded-xl shadow-2xl p-4 flex flex-col gap-3 overflow-y-auto animate-in fade-in slide-in-from-bottom-3 sm:slide-in-from-top-2 duration-200 text-slate-800"
+            style={{
+              top: `${coords.top}px`,
+              left: `${coords.left}px`,
+              width: `${coords.width}px`,
+              maxHeight: `${coords.maxHeight}px`,
+            }}
+            className="fixed z-[2147483000] bg-white border border-slate-200 rounded-xl shadow-2xl p-3 flex flex-col gap-2.5 overflow-y-auto no-scrollbar animate-in fade-in zoom-in-95 duration-150 text-slate-800"
             role="dialog"
             aria-modal="true"
             aria-label="Menu Opsi Tambahan"
@@ -140,7 +219,7 @@ const MoreControls = ({ editor, readOnly, onImagePicker }: MoreControlsProps) =>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer text-lg leading-none"
+                className="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-md transition-colors cursor-pointer text-base leading-none"
                 aria-label="Tutup menu"
               >
                 ×
