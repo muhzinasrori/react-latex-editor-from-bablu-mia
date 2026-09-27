@@ -725,447 +725,447 @@ const MathEquationDialog = forwardRef<HTMLDivElement, MathEquationDialogProps>(
             aria-modal="true"
             aria-labelledby="math-dialog-title"
           >
-          <div className="math-dialog-header flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-200 shrink-0">
-            <h3 id="math-dialog-title" className="text-base font-semibold text-slate-900 m-0">
-              Insert Math Equation
-            </h3>
-            <div className="flex items-center gap-2">
-              <button
-                className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-md hover:bg-slate-100 active:bg-slate-200 transition-colors cursor-pointer shadow-2xs"
-                onClick={() => {
-                  try {
-                    mathFieldRef.current?.executeCommand?.("toggleContextMenu");
-                  } catch (_) {}
-                }}
-                type="button"
-                title="Buka menu opsi / matriks"
-                aria-label="Toggle menu"
-              >
-                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="4" y1="6" x2="20" y2="6" />
-                  <line x1="4" y1="12" x2="20" y2="12" />
-                  <line x1="4" y1="18" x2="20" y2="18" />
-                </svg>
-                <span>Menu</span>
-              </button>
-              <button
-                className="close-button flex items-center justify-center w-7 h-7 text-xl leading-none text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 rounded-md transition-colors cursor-pointer"
-                onClick={handleClose}
-                type="button"
-                aria-label="Close dialog"
-              >
-                ×
-              </button>
-            </div>
-          </div>
-
-          {/* Area Konten Scrollable: Hanya bagian ini yang terkena scroll */}
-          <div className="math-dialog-body flex-1 overflow-y-auto min-h-0 flex flex-col">
-            <div className="math-editor p-3.5 border-b border-slate-200 shrink-0">
-            <div className="flex items-center justify-between mb-1.5">
-              <button
-                type="button"
-                onClick={() => textInputRef.current?.focus()}
-                className="text-xs text-blue-600 hover:text-blue-800 font-medium sm:hidden cursor-pointer"
-              >
-                Ketik via Keyboard HP ↓
-              </button>
-            </div>
-            {React.createElement("math-field", {
-              ref: mathFieldRef,
-              value: latex,
-              onInput: handleInput,
-              onClick: showVirtualKeyboard,
-              onFocus: showVirtualKeyboard,
-              "math-virtual-keyboard-policy": "auto",
-              mathVirtualKeyboardPolicy: "auto",
-              "virtual-keyboard-mode": "auto",
-              className: "math-dialog-math-field block w-full min-h-[52px] p-2.5 text-base bg-white border-2 border-slate-200 rounded-lg focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-all cursor-text",
-              "math-mode": "latex",
-              "smart-mode": "on",
-              "smart-fence": "on",
-              "smart-superscript": "on",
-              "smart-subscript": "on",
-              "smart-operator": "on",
-              "smart-fraction": "on",
-              "smart-sqrt": "on",
-              "smart-bracket": "on",
-              "smart-paren": "on",
-              "smart-quote": "on",
-              "smart-space": "on",
-              "smart-command": "on",
-            })}
-          </div>
-
-          {/* Input Teks Langsung (100% Munculkan Keyboard Bawaan di HP) */}
-          <div className="p-3 bg-blue-50/50 border-b border-slate-200 shrink-0">
-            <div className="flex items-center justify-between mb-1.5">
-              <label htmlFor="hp-latex-input" className="text-xs font-semibold text-blue-800 flex items-center gap-1.5">
-                <svg className="w-4 h-4 text-blue-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="2" y="4" width="20" height="16" rx="2" />
-                  <line x1="6" y1="8" x2="6" y2="8" />
-                  <line x1="10" y1="8" x2="10" y2="8" />
-                  <line x1="14" y1="8" x2="14" y2="8" />
-                  <line x1="18" y1="8" x2="18" y2="8" />
-                  <line x1="6" y1="12" x2="6" y2="12" />
-                  <line x1="10" y1="12" x2="10" y2="12" />
-                  <line x1="14" y1="12" x2="14" y2="12" />
-                  <line x1="18" y1="12" x2="18" y2="12" />
-                  <line x1="7" y1="16" x2="17" y2="16" />
-                </svg>
-                <span>Input Teks Rumus (Keyboard HP)</span>
-              </label>
-              <span className="text-[11px] text-blue-600 font-medium">Ketuk untuk buka keyboard HP</span>
-            </div>
-            <input
-              ref={textInputRef}
-              id="hp-latex-input"
-              type="text"
-              value={latex}
-              onChange={handleTextChange}
-              placeholder="Ketuk di sini untuk mengetik dengan keyboard HP (contoh: x^2 + 5)"
-              className="w-full px-3 py-2 text-sm font-mono text-slate-800 bg-white border border-blue-200 rounded-lg focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-all shadow-2xs"
-              autoCapitalize="none"
-              autoCorrect="off"
-              autoComplete="off"
-              spellCheck="false"
-            />
-          </div>
-
-          <div className="math-toolbar-tabs sticky top-0 z-10 flex flex-wrap gap-1 px-3 py-2 bg-slate-50/95 backdrop-blur-xs border-b border-slate-200 shrink-0">
-            {(Object.keys(toolbarSections) as Array<keyof TabSections>).map(
-              (tab) => (
+            <div className="math-dialog-header flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-200 shrink-0">
+              <h3 id="math-dialog-title" className="text-base font-semibold text-slate-900 m-0">
+                Insert Math Equation
+              </h3>
+              <div className="flex items-center gap-2">
                 <button
-                  key={tab}
-                  className={`tab-button px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer ${
-                    activeTab === tab
-                      ? "active bg-blue-600 text-white hover:bg-blue-700"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/70"
-                  }`}
-                  onClick={() => setActiveTab(tab)}
+                  className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-md hover:bg-slate-100 active:bg-slate-200 transition-colors cursor-pointer shadow-2xs"
+                  onClick={() => {
+                    try {
+                      mathFieldRef.current?.executeCommand?.("toggleContextMenu");
+                    } catch (_) {}
+                  }}
+                  type="button"
+                  title="Buka menu opsi / matriks"
+                  aria-label="Toggle menu"
+                >
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="4" y1="6" x2="20" y2="6" />
+                    <line x1="4" y1="12" x2="20" y2="12" />
+                    <line x1="4" y1="18" x2="20" y2="18" />
+                  </svg>
+                  <span>Menu</span>
+                </button>
+                <button
+                  className="close-button flex items-center justify-center w-7 h-7 text-xl leading-none text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 rounded-md transition-colors cursor-pointer"
+                  onClick={handleClose}
+                  type="button"
+                  aria-label="Close dialog"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+
+            {/* Area Konten Scrollable: Hanya bagian ini yang terkena scroll */}
+            <div className="math-dialog-body flex-1 overflow-y-auto min-h-0 flex flex-col">
+              <div className="math-editor p-3.5 border-b border-slate-200 shrink-0">
+              <div className="flex items-center justify-between mb-1.5">
+                <button
+                  type="button"
+                  onClick={() => textInputRef.current?.focus()}
+                  className="text-xs text-blue-600 hover:text-blue-800 font-medium sm:hidden cursor-pointer"
+                >
+                  Ketik via Keyboard HP ↓
+                </button>
+              </div>
+              {React.createElement("math-field", {
+                ref: mathFieldRef,
+                value: latex,
+                onInput: handleInput,
+                onClick: showVirtualKeyboard,
+                onFocus: showVirtualKeyboard,
+                "math-virtual-keyboard-policy": "auto",
+                mathVirtualKeyboardPolicy: "auto",
+                "virtual-keyboard-mode": "auto",
+                className: "math-dialog-math-field block w-full min-h-[52px] p-2.5 text-base bg-white border-2 border-slate-200 rounded-lg focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-all cursor-text",
+                "math-mode": "latex",
+                "smart-mode": "on",
+                "smart-fence": "on",
+                "smart-superscript": "on",
+                "smart-subscript": "on",
+                "smart-operator": "on",
+                "smart-fraction": "on",
+                "smart-sqrt": "on",
+                "smart-bracket": "on",
+                "smart-paren": "on",
+                "smart-quote": "on",
+                "smart-space": "on",
+                "smart-command": "on",
+              })}
+            </div>
+
+            {/* Input Teks Langsung (100% Munculkan Keyboard Bawaan di HP) */}
+            <div className="p-3 bg-blue-50/50 border-b border-slate-200 shrink-0">
+              <div className="flex items-center justify-between mb-1.5">
+                <label htmlFor="hp-latex-input" className="text-xs font-semibold text-blue-800 flex items-center gap-1.5">
+                  <svg className="w-4 h-4 text-blue-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="4" width="20" height="16" rx="2" />
+                    <line x1="6" y1="8" x2="6" y2="8" />
+                    <line x1="10" y1="8" x2="10" y2="8" />
+                    <line x1="14" y1="8" x2="14" y2="8" />
+                    <line x1="18" y1="8" x2="18" y2="8" />
+                    <line x1="6" y1="12" x2="6" y2="12" />
+                    <line x1="10" y1="12" x2="10" y2="12" />
+                    <line x1="14" y1="12" x2="14" y2="12" />
+                    <line x1="18" y1="12" x2="18" y2="12" />
+                    <line x1="7" y1="16" x2="17" y2="16" />
+                  </svg>
+                  <span>Input Teks Rumus (Keyboard HP)</span>
+                </label>
+                <span className="text-[11px] text-blue-600 font-medium">Ketuk untuk buka keyboard HP</span>
+              </div>
+              <input
+                ref={textInputRef}
+                id="hp-latex-input"
+                type="text"
+                value={latex}
+                onChange={handleTextChange}
+                placeholder="Ketuk di sini untuk mengetik dengan keyboard HP (contoh: x^2 + 5)"
+                className="w-full px-3 py-2 text-sm font-mono text-slate-800 bg-white border border-blue-200 rounded-lg focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none transition-all shadow-2xs"
+                autoCapitalize="none"
+                autoCorrect="off"
+                autoComplete="off"
+                spellCheck="false"
+              />
+            </div>
+
+            <div className="math-toolbar-tabs sticky top-0 z-10 flex flex-wrap gap-1 px-3 py-2 bg-slate-50/95 backdrop-blur-xs border-b border-slate-200 shrink-0">
+              {(Object.keys(toolbarSections) as Array<keyof TabSections>).map(
+                (tab) => (
+                  <button
+                    key={tab}
+                    className={`tab-button px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer ${
+                      activeTab === tab
+                        ? "active bg-blue-600 text-white hover:bg-blue-700"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/70"
+                    }`}
+                    onClick={() => setActiveTab(tab)}
+                    type="button"
+                  >
+                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  </button>
+                ),
+              )}
+            </div>
+
+            <div className="math-toolbar-container p-2.5 border-b border-slate-200 max-h-[140px] shrink-0">
+              {renderToolbar(toolbarSections[activeTab])}
+            </div>
+
+            <div className="math-examples overflow-y-auto border-b border-slate-200 max-h-[140px] overflow-y-auto shrink-0">
+              <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 m-0 mb-2">
+                General
+              </h4>
+              <div className="equation-buttons flex flex-wrap items-center gap-1.5">
+                <button
+                  onClick={() =>
+                  insertSymbol("\\space")
+                  }
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
                   type="button"
                 >
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  Spasi
                 </button>
-              ),
-            )}
-          </div>
+                <button
+                  onClick={toggleVirtualKeyboard}
+                  className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors cursor-pointer"
+                  type="button"
+                  title="Tampilkan / Sembunyikan Keyboard di HP"
+                >
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="4" width="20" height="16" rx="2" />
+                    <line x1="6" y1="8" x2="6" y2="8" />
+                    <line x1="10" y1="8" x2="10" y2="8" />
+                    <line x1="14" y1="8" x2="14" y2="8" />
+                    <line x1="18" y1="8" x2="18" y2="8" />
+                    <line x1="6" y1="12" x2="6" y2="12" />
+                    <line x1="10" y1="12" x2="10" y2="12" />
+                    <line x1="14" y1="12" x2="14" y2="12" />
+                    <line x1="18" y1="12" x2="18" y2="12" />
+                    <line x1="7" y1="16" x2="17" y2="16" />
+                  </svg>
+                  Keyboard HP
+                </button>
+                <button
+                  onClick={() => insertSymbol("x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Quadratic Formula
+                </button>
+                <button
+                  onClick={() => insertSymbol("a^2 + b^2 = c^2")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Pythagorean Theorem
+                </button>
+                <button
+                  onClick={() => insertSymbol("A = \\pi r^2")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Area of Circle
+                </button>
+                <button
+                  onClick={() => insertSymbol("C = 2 \\pi r")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Circumference
+                </button>
+              </div>
+            </div>
 
-          <div className="math-toolbar-container p-2.5 border-b border-slate-200 max-h-[140px] overflow-y-auto shrink-0">
-            {renderToolbar(toolbarSections[activeTab])}
-          </div>
+            <div className="math-examples border-b border-slate-200 max-h-[140px] overflow-y-auto shrink-0">
+              <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 m-0 mb-2">
+              Higher Math
+              </h4>
+              <div className="equation-buttons flex flex-wrap items-center gap-1.5">
+                <button
+                  onClick={() => insertSymbol("\\frac{dy}{dx}")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Derivative
+                </button>
+                <button
+                  onClick={() => insertSymbol("e^{i\\pi} + 1 = 0")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Euler's Identity
+                </button>
+                <button
+                  onClick={() =>
+                  insertSymbol(
+                    "f'(x) = \\lim_{h \\to 0} \\frac{f(x+h) - f(x)}{h}",
+                  )
+                  }
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Limit Definition of Derivative
+                </button>
+                <button
+                  onClick={() =>
+                  insertSymbol(
+                    "\\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}",
+                  )
+                  }
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Gaussian Integral
+                </button>
+              </div>
+            </div>
 
-          <div className="math-examples border-b border-slate-200 max-h-[140px] overflow-y-auto shrink-0">
-            <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 m-0 mb-2">
-              General
-            </h4>
-            <div className="equation-buttons flex flex-wrap items-center gap-1.5">
-              <button
-                onClick={() =>
-                insertSymbol("\\space")
-                }
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Spasi
-              </button>
-              <button
-                onClick={toggleVirtualKeyboard}
-                className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors cursor-pointer"
-                type="button"
-                title="Tampilkan / Sembunyikan Keyboard di HP"
-              >
-                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="2" y="4" width="20" height="16" rx="2" />
-                  <line x1="6" y1="8" x2="6" y2="8" />
-                  <line x1="10" y1="8" x2="10" y2="8" />
-                  <line x1="14" y1="8" x2="14" y2="8" />
-                  <line x1="18" y1="8" x2="18" y2="8" />
-                  <line x1="6" y1="12" x2="6" y2="12" />
-                  <line x1="10" y1="12" x2="10" y2="12" />
-                  <line x1="14" y1="12" x2="14" y2="12" />
-                  <line x1="18" y1="12" x2="18" y2="12" />
-                  <line x1="7" y1="16" x2="17" y2="16" />
-                </svg>
-                Keyboard HP
-              </button>
-              <button
-                onClick={() => insertSymbol("x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Quadratic Formula
-              </button>
-              <button
-                onClick={() => insertSymbol("a^2 + b^2 = c^2")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Pythagorean Theorem
-              </button>
-              <button
-                onClick={() => insertSymbol("A = \\pi r^2")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Area of Circle
-              </button>
-              <button
-                onClick={() => insertSymbol("C = 2 \\pi r")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Circumference
-              </button>
+            <div className="math-examples border-b border-slate-200 max-h-[140px] overflow-y-auto shrink-0">
+              <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 m-0 mb-2">
+              Physics
+              </h4>
+              <div className="equation-buttons flex flex-wrap items-center gap-1.5">
+                <button
+                  onClick={() => insertSymbol("F = ma")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Newton's 2nd Law
+                </button>
+                <button
+                  onClick={() => insertSymbol("E = mc^2")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  E=mc²
+                </button>
+                <button
+                  onClick={() => insertSymbol("KE = \\frac{1}{2} mv^2")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Kinetic Energy
+                </button>
+                <button
+                  onClick={() => insertSymbol("V = IR")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Ohm's Law
+                </button>
+                <button
+                  onClick={() =>
+                  insertSymbol("\\Delta x \\Delta p \\geq \\frac{\\hbar}{2}")
+                  }
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Uncertainty Principle
+                </button>
+                <button
+                  onClick={() =>
+                  insertSymbol(
+                    "\\nabla \\cdot \\vec{E} = \\frac{\\rho}{\\epsilon_0}",
+                  )
+                  }
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Gauss's Law
+                </button>
+              </div>
+            </div>
+
+            <div className="math-examples border-b border-slate-200 max-h-[140px] overflow-y-auto shrink-0">
+              <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 m-0 mb-2">
+              Chemistry
+              </h4>
+              <div className="equation-buttons flex flex-wrap items-center gap-1.5">
+                <button
+                  onClick={() => insertSymbol("H_2O")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Water Formula
+                </button>
+                <button
+                  onClick={() => insertSymbol("n = \\frac{m}{M}")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Molar Mass
+                </button>
+                <button
+                  onClick={() => insertSymbol("PV = nRT")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Ideal Gas Law
+                </button>
+                <button
+                  onClick={() => insertSymbol("2H_2 + O_2 \\to 2H_2O")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Chemical Reaction
+                </button>
+                <button
+                  onClick={() => insertSymbol("K_a = \\frac{[H^+][A^-]}{[HA]}")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Acid Constant
+                </button>
+              </div>
+            </div>
+
+            <div className="math-examples border-b border-slate-200 max-h-[140px] overflow-y-auto shrink-0">
+              <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 m-0 mb-2">
+              Geometry
+              </h4>
+              <div className="equation-buttons flex flex-wrap items-center gap-1.5">
+                <button
+                  onClick={() => insertSymbol("\\angle ABC = 90^\\circ")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Right Angle
+                </button>
+                <button
+                  onClick={() => insertSymbol("\\angle ABC = 180^\\circ")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Straight Angle
+                </button>
+                <button
+                  onClick={() => insertSymbol("A = \\frac{1}{2}bh")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Triangle Area
+                </button>
+                <button
+                  onClick={() => insertSymbol("A = s^2")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Square Area
+                </button>
+                <button
+                  onClick={() => insertSymbol("A = lw")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Rectangle Area
+                </button>
+                <button
+                  onClick={() => insertSymbol("V = \\frac{4}{3}\\pi r^3")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Sphere Volume
+                </button>
+                <button
+                  onClick={() =>
+                  insertSymbol("\\triangle ABC \\cong \\triangle DEF")
+                  }
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Congruent Triangles
+                </button>
+                <button
+                  onClick={() => insertSymbol("AB \\parallel CD")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Parallel Lines
+                </button>
+                <button
+                  onClick={() => insertSymbol("AB \\perp CD")}
+                  className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
+                  type="button"
+                >
+                  Perpendicular Lines
+                </button>
+              </div>
+            </div>
+
+              <div className="math-display-mode-toggle flex items-center justify-between gap-3 px-4 py-2.5 text-xs text-slate-600 shrink-0">
+                <label className="inline-flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={displayMode}
+                    onChange={(e) => setDisplayMode(e.target.checked)}
+                    className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
+                  />
+                  Display as centered block (still allows text before/after)
+                </label>
+                <span className="math-dialog-hint text-[11px] text-slate-400">Tip: Ctrl/Cmd + Enter to insert</span>
+              </div>
+
+              {/* Footer: Tetap Fixed di Bawah Dialog */}
+              <div className="math-dialog-footer fixed sticky bottom-0 z-10 flex items-center justify-end gap-2 px-4 py-3 bg-slate-50 border-t border-slate-200 rounded-b-xl shrink-0 shadow-xs">
+                  <button className="cancel-button px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer" onClick={handleClose} type="button">
+                    Cancel
+                  </button>
+                  <button                   
+                    className="save-button px-4 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-xs"
+                    onClick={handleSave}
+                    type="button"
+                    disabled={isInserting || !latex.trim()}
+                    aria-busy={isInserting}
+                  >
+                    {isInserting ? "Inserting..." : "Insert Equation"}
+                  </button>
+              </div>
             </div>
           </div>
-
-          <div className="math-examples border-b border-slate-200 max-h-[140px] overflow-y-auto shrink-0">
-            <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 m-0 mb-2">
-            Higher Math
-            </h4>
-            <div className="equation-buttons flex flex-wrap items-center gap-1.5">
-              <button
-                onClick={() => insertSymbol("\\frac{dy}{dx}")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Derivative
-              </button>
-              <button
-                onClick={() => insertSymbol("e^{i\\pi} + 1 = 0")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Euler's Identity
-              </button>
-              <button
-                onClick={() =>
-                insertSymbol(
-                  "f'(x) = \\lim_{h \\to 0} \\frac{f(x+h) - f(x)}{h}",
-                )
-                }
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Limit Definition of Derivative
-              </button>
-              <button
-                onClick={() =>
-                insertSymbol(
-                  "\\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}",
-                )
-                }
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Gaussian Integral
-              </button>
-            </div>
-          </div>
-
-          <div className="math-examples border-b border-slate-200 max-h-[140px] overflow-y-auto shrink-0">
-            <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 m-0 mb-2">
-            Physics
-            </h4>
-            <div className="equation-buttons flex flex-wrap items-center gap-1.5">
-              <button
-                onClick={() => insertSymbol("F = ma")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Newton's 2nd Law
-              </button>
-              <button
-                onClick={() => insertSymbol("E = mc^2")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                E=mc²
-              </button>
-              <button
-                onClick={() => insertSymbol("KE = \\frac{1}{2} mv^2")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Kinetic Energy
-              </button>
-              <button
-                onClick={() => insertSymbol("V = IR")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Ohm's Law
-              </button>
-              <button
-                onClick={() =>
-                insertSymbol("\\Delta x \\Delta p \\geq \\frac{\\hbar}{2}")
-                }
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Uncertainty Principle
-              </button>
-              <button
-                onClick={() =>
-                insertSymbol(
-                  "\\nabla \\cdot \\vec{E} = \\frac{\\rho}{\\epsilon_0}",
-                )
-                }
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Gauss's Law
-              </button>
-            </div>
-          </div>
-
-          <div className="math-examples border-b border-slate-200 max-h-[140px] overflow-y-auto shrink-0">
-            <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 m-0 mb-2">
-            Chemistry
-            </h4>
-            <div className="equation-buttons flex flex-wrap items-center gap-1.5">
-              <button
-                onClick={() => insertSymbol("H_2O")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Water Formula
-              </button>
-              <button
-                onClick={() => insertSymbol("n = \\frac{m}{M}")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Molar Mass
-              </button>
-              <button
-                onClick={() => insertSymbol("PV = nRT")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Ideal Gas Law
-              </button>
-              <button
-                onClick={() => insertSymbol("2H_2 + O_2 \\to 2H_2O")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Chemical Reaction
-              </button>
-              <button
-                onClick={() => insertSymbol("K_a = \\frac{[H^+][A^-]}{[HA]}")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Acid Constant
-              </button>
-            </div>
-          </div>
-
-          <div className="math-examples border-b border-slate-200 max-h-[140px] overflow-y-auto shrink-0">
-            <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 m-0 mb-2">
-            Geometry
-            </h4>
-            <div className="equation-buttons flex flex-wrap items-center gap-1.5">
-              <button
-                onClick={() => insertSymbol("\\angle ABC = 90^\\circ")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Right Angle
-              </button>
-              <button
-                onClick={() => insertSymbol("\\angle ABC = 180^\\circ")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Straight Angle
-              </button>
-              <button
-                onClick={() => insertSymbol("A = \\frac{1}{2}bh")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Triangle Area
-              </button>
-              <button
-                onClick={() => insertSymbol("A = s^2")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Square Area
-              </button>
-              <button
-                onClick={() => insertSymbol("A = lw")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Rectangle Area
-              </button>
-              <button
-                onClick={() => insertSymbol("V = \\frac{4}{3}\\pi r^3")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Sphere Volume
-              </button>
-              <button
-                onClick={() =>
-                insertSymbol("\\triangle ABC \\cong \\triangle DEF")
-                }
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Congruent Triangles
-              </button>
-              <button
-                onClick={() => insertSymbol("AB \\parallel CD")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Parallel Lines
-              </button>
-              <button
-                onClick={() => insertSymbol("AB \\perp CD")}
-                className="px-2.5 py-1 text-xs text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                type="button"
-              >
-                Perpendicular Lines
-              </button>
-            </div>
-          </div>
-
-          <div className="math-display-mode-toggle flex items-center justify-between gap-3 px-4 py-2.5 text-xs text-slate-600 shrink-0">
-            <label className="inline-flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={displayMode}
-                onChange={(e) => setDisplayMode(e.target.checked)}
-                className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
-              />
-              Display as centered block (still allows text before/after)
-            </label>
-            <span className="math-dialog-hint text-[11px] text-slate-400">Tip: Ctrl/Cmd + Enter to insert</span>
-          </div>
-        </div>
-
-        {/* Footer: Tetap Fixed di Bawah Dialog */}
-        <div className="math-dialog-footer sticky bottom-0 z-10 flex items-center justify-end gap-2 px-4 py-3 bg-slate-50 border-t border-slate-200 rounded-b-xl shrink-0 shadow-xs">
-            <button className="cancel-button px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer" onClick={handleClose} type="button">
-              Cancel
-            </button>
-            <button                   
-              className="save-button px-4 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-xs"
-              onClick={handleSave}
-              type="button"
-              disabled={isInserting || !latex.trim()}
-              aria-busy={isInserting}
-            >
-              {isInserting ? "Inserting..." : "Insert Equation"}
-            </button>
-          </div>
-        </div>
         </div>
       </ModalPortal>
     );
